@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <OpenCV_dir>$(ThirdParty)opencv\</OpenCV_dir>
+    <OpenCV_bin>$(OpenCV_dir)build\x64\vc12\bin\</OpenCV_bin>
+    <OpenCV_ver>310</OpenCV_ver>
+    <OpenCV_lib>$(OpenCV_dir)build\x64\vc12\lib\</OpenCV_lib>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_PropertySheetDisplayName>OpenCV_Common</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="OpenCV_dir">
+      <Value>$(OpenCV_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="OpenCV_bin">
+      <Value>$(OpenCV_bin)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="OpenCV_ver">
+      <Value>$(OpenCV_ver)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="OpenCV_lib">
+      <Value>$(OpenCV_lib)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
