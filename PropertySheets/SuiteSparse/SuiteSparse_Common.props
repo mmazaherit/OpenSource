@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <SuiteSparse_dir>$(ThirdParty)suitesparse-metis-for-windows\</SuiteSparse_dir>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SuiteSparse_dir)SuiteSparse\CSparse;$(SuiteSparse_dir)SuiteSparse\CHOLMOD\include;$(SuiteSparse_dir)SuiteSparse\SuiteSparse_config;$(SuiteSparse_dir)SuiteSparse\SPQR\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SuiteSparse_dir)buildNGPL\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(SuiteSparse_dir)lapack_windows\x64\liblapack.lib		;$(SuiteSparse_dir)lapack_windows\x64\libblas.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(SuiteSparse_dir)lapack_windows\x64\*.dll" "$(OutDir)"
+%(Command)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="SuiteSparse_dir">
+      <Value>$(SuiteSparse_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
