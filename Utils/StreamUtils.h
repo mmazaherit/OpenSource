@@ -7,7 +7,8 @@
 #include <vector>
 
 #ifdef WIN32
-    #include <windows.h>
+#include <windows.h>
+#include <shlobj.h>
 #endif
 // trim from left
 inline std::string &ltrim(std::string &s, const char* t = " \t\n\r\f\v")
@@ -42,28 +43,28 @@ inline std::vector<std::vector<std::string>> ReadSpaceDelimitedFile(const char* 
     {
         std::string s;
         if (!getline(infile, s)) break;
-        
+
         std::istringstream ss(s);
         std::vector <std::string> record;
-        
+
         while (ss)
         {
             std::string s;
-            
+
             ss >> s;
-            
+
             //if (!getline(ss, s, ',')) break;
             if (!trim(s).empty())
                 record.push_back(s);
         }
-        
+
         data.push_back(record);
     }
     if (!infile.eof())
     {
         std::cerr << "Fooey!\n";
     }
-    
+
     return data;
 }
 inline std::string GetFileName(const std::string &FilePath)
@@ -90,7 +91,7 @@ inline std::string GetFolderName(const std::string &FilePath)
 {
     size_t found;
     found = FilePath.find_last_of("/\\");
-    
+
     return FilePath.substr(0,found);
 }
 inline std::string GetMyDocsDirA()
@@ -105,7 +106,7 @@ inline std::string GetMyDocsDirA()
     {
         my_docs_dir = szPath;
     }
-    
+
     return my_docs_dir;
 };
 inline std::string GetExePathA()
@@ -113,7 +114,7 @@ inline std::string GetExePathA()
 
     char szPath[_MAX_PATH + 1];
     GetModuleFileNameA(0, szPath, _MAX_PATH + 1);
-    
+
     return std::string(szPath);
 }
 inline std::string ReadWholeFile(const std::string& FilePath)
@@ -126,66 +127,66 @@ inline std::string ReadWholeFile(const std::string& FilePath)
     ifs.seekg(0, std::ios::beg);
     ifs.read(&Buffer[0], length);
     ifs.close();
-    
+
     return Buffer;
-    
+
 }
 inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory, const std::string filter="*")
 {
     std::vector<std::string> out;
-    #ifdef WIN32
+#ifdef WIN32
     HANDLE dir;
     WIN32_FIND_DATAA file_data;
-    
+
     if ((dir = FindFirstFileA((directory + "/" + filter).c_str(), &file_data)) == INVALID_HANDLE_VALUE)
         return out; /* No files found */
-        
+
     do
     {
         const std::string file_name = file_data.cFileName;
         const std::string full_file_name = directory + "/" + file_name;
         const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-        
+
         if (file_name[0] == '.')
             continue;
-            
+
         if (is_directory)
             continue;
-            
+
         out.push_back(full_file_name);
     }
     while (FindNextFileA(dir, &file_data));
-    
+
     FindClose(dir);
-    
+
     return out;
-    #else
+#else
     DIR* dir;
     class dirent* ent;
     class stat st;
-    
+
     dir = opendir(directory);
     while ((ent = readdir(dir)) != NULL)
     {
         const string file_name = ent->d_name;
         const string full_file_name = directory + "/" + file_name;
-    
+
         if (file_name[0] == '.')
             continue;
-    
+
         if (stat(full_file_name.c_str(), &st) == -1)
             continue;
-    
+
         const bool is_directory = (st.st_mode & S_IFDIR) != 0;
-    
+
         if (is_directory)
             continue;
-    
+
         out.push_back(full_file_name);
     }
     closedir(dir);
     return out;
-    #endif
+#endif
 } // GetFilesInDirectory
 
 #endif // StreamUtils_h__
