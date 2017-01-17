@@ -1,12 +1,21 @@
-set srcdir=D:\ThirdParty\vtk-master\
-set builddir=%srcdir%build
-
-set qdir=D:/ThirdParty/Qt/5.7/msvc2013/
+set thirdparty=D:\ThirdParty\
+set buildfolder=buildx64
+set qdir=D:/ThirdParty/Qt/5.7/msvc2015_64/
 set qmake=%qdir%bin/qmake.exe
 set qcmakedir=%qdir%lib/cmake/Qt5
 
-mkdir %builddir%
-chdir %builddir%
-cmake .. -G "Visual Studio 12" -DVTK_QT_VERSION=5 -DQt5_DIR=%qcmakedir%  -DQT_QMAKE_EXECUTABLE=%qmake% -DModule_vtkIOExportOpenGL2=1 -DModule_vtkRenderingLICOpenGL2=1 -DVTK_BUILD_QT_DESIGNER_PLUGIN=1 -DVTK_Group_Qt=1 -DModule_vtkGUISupportQtOpenGL=1
+chdir %thirdparty%
+::git clone https://github.com/Kitware/VTK.git
+
+cd VTK
+mkdir %buildfolder%
+cd %buildfolder%
+
+
+cmake .. -G "Visual Studio 14 Win64" -DVTK_QT_VERSION=5 -DQt5_DIR=%qcmakedir%  -DQT_QMAKE_EXECUTABLE=%qmake% -DModule_vtkIOExportOpenGL2=1 -DModule_vtkRenderingLICOpenGL2=1 -DVTK_BUILD_QT_DESIGNER_PLUGIN=1 -DVTK_Group_Qt=1 -DModule_vtkGUISupportQtOpenGL=1
+
+cmake --build . --target ALL_BUILD --config Release
+cmake --build . --target ALL_BUILD --config Debug
+
 
 pause>nul
