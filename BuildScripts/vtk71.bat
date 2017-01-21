@@ -5,7 +5,7 @@ set qmake=%qdir%bin/qmake.exe
 set qcmakedir=%qdir%lib/cmake/Qt5
 
 chdir %thirdparty%
-::git clone https://github.com/Kitware/VTK.git
+git clone https://github.com/Kitware/VTK.git
 
 cd VTK
 mkdir %buildfolder%
