@@ -8,7 +8,7 @@ set mypath=%~dp0
 
 set buildtype="Visual Studio 14 Win64" 
 set buildfolder=buildx64
-set eigenpackage=3.3.2
+
 
 chdir %ceresroot%
 git clone https://github.com/ceres-solver/ceres-solver.git
@@ -24,16 +24,8 @@ CALL %mypath%\SuiteSparse.bat %ceresthirdparty%
 set suitesparse=%ceresthirdparty%\suitesparse-metis-for-windows\
 set suitesparselib=%ceresthirdparty%\suitesparse-metis-for-windows\%buildfolder%\lib\Release\
 
-
-
-chdir %ceresthirdparty%
-%mypath%\wget.exe "http://bitbucket.org/eigen/eigen/get/%eigenpackage%.tar.gz"
-%mypath%\7z.exe x  %eigenpackage%.tar.gz -so | %mypath%\7z.exe x -si -ttar
-::eigen add junks to the folder name, must be removed
-set cmd="dir eigen-eigen* /b"
-FOR /F "tokens=*" %%i IN (' %cmd% ') DO SET eigendir=%%i
-rename "%eigendir%" "eigen-eigen"
-
+::install eigen
+CALL %mypath%\eigen.bat %ceresthirdparty%
 
 
 ::GFLAGS
