@@ -26,7 +26,7 @@ mkdir ThirdParty
 cd ThirdParty
 set pclthirdparty=%pclroot%\pcl\ThirdParty
 ::download flann
-git clone git://github.com/mariusmuja/flann.git
+git clone http://github.com/mariusmuja/flann.git
 
 cd flann
 mkdir %buildfolder%
