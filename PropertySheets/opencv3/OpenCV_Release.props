@@ -5,17 +5,14 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <Link />
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(OpenCV_dir)build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
+    <ClCompile />
     <PostBuildEvent />
     <Link>
-      <AdditionalLibraryDirectories>$(OpenCV_lib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world$(OpenCV_ver).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(OpenCV_bin)opencv_world$(OpenCV_ver).dll" "$(OutDir)"
-xcopy /y /d "$(OpenCV_bin)opencv_ffmpeg$(OpenCV_ver)_64.dll" "$(OutDir)"
+      <Command>xcopy /y /d "$(OpenCV_bin)\opencv_world$(OpenCV_ver).dll" "$(OutDir)"
+xcopy /y /d "$(OpenCV_bin)\opencv_ffmpeg$(OpenCV_ver)_64.dll" "$(OutDir)"
 %(Command)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

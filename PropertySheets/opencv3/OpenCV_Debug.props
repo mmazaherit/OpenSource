@@ -4,19 +4,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
   <ItemDefinitionGroup>
-    <Link />
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(OpenCV_dir)build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
     <Link>
       <AdditionalDependencies>opencv_world$(OpenCV_ver)d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OpenCV_lib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(openCV_bin)opencv_world$(OpenCV_ver)d.dll" "$(OutDir)"
-xcopy /y /d "$(openCV_bin)opencv_ffmpeg$(OpenCV_ver)_64.dll" "$(OutDir)"
+      <Command>xcopy /y /d "$(OpenCV_bin)\opencv_world$(OpenCV_ver)d.dll" "$(OutDir)"
+xcopy /y /d "$(OpenCV_bin)\opencv_ffmpeg$(OpenCV_ver)_64.dll" "$(OutDir)"
 %(Command)</Command>
     </PostBuildEvent>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
