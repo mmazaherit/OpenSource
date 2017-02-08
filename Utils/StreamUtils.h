@@ -80,14 +80,14 @@ inline std::string GetFileNameWithoutExtention(const std::string &FilePath)
     found = filename.find_last_of(".");
     return filename.substr(0,found);
 }
-inline std::string GetFileNamExtention(const std::string &FilePath)
+inline std::string GetFileNameExtention(const std::string &FilePath)
 {
     std::string filename = GetFileName(FilePath);
     size_t found;
     found = filename.find_last_of(".");
-    return filename.substr(0, found+1);
+    return filename.substr(found+1,filename.size());
 }
-inline std::string GetFolderName(const std::string &FilePath)
+inline std::string GetFileFolderName(const std::string &FilePath)
 {
     size_t found;
     found = FilePath.find_last_of("/\\");
