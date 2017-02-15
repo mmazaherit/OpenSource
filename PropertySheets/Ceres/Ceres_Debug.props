@@ -6,7 +6,7 @@
   <ItemDefinitionGroup>
     <ClCompile />
     <Link>
-      <AdditionalDependencies>$(ThirdParty)ceres-solver\build\lib\Debug\ceres-debug.lib;libamdd.lib;libbtfd.lib;libcamdd.lib;libccolamdd.lib;libcholmodd.lib;libcolamdd.lib;libcxsparsed.lib;libklud.lib;libldld.lib;libspqrd.lib;libumfpackd.lib;metisd.lib;suitesparseconfigd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ThirdParty)\ceres-solver\build$(Platform)\lib\Debug\ceres-debug.lib;libamdd.lib;libbtfd.lib;libcamdd.lib;libccolamdd.lib;libcholmodd.lib;libcolamdd.lib;libcxsparsed.lib;libklud.lib;libldld.lib;libspqrd.lib;libumfpackd.lib;metisd.lib;suitesparseconfigd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile />
     <PostBuildEvent />

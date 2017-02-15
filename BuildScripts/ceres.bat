@@ -8,10 +8,11 @@ set mypath=%~dp0
 
 set buildtype="Visual Studio 14 Win64" 
 set buildfolder=buildx64
-
+set cerestag="1.12.0"
+set eigentag="3.3.2"
 
 chdir %ceresroot%
-git clone https://github.com/ceres-solver/ceres-solver.git
+git clone --branch %cerestag% https://github.com/ceres-solver/ceres-solver.git
 
 
 cd ceres-solver
@@ -25,12 +26,12 @@ set suitesparse=%ceresthirdparty%\suitesparse-metis-for-windows\
 set suitesparselib=%ceresthirdparty%\suitesparse-metis-for-windows\%buildfolder%\lib\Release\
 
 ::install eigen
-CALL %mypath%\eigen.bat %ceresthirdparty%
+CALL %mypath%\eigen.bat %ceresthirdparty% %eigentag%
 
 
 ::GFLAGS
 chdir %ceresthirdparty%
-git clone https://github.com/gflags/gflags.git
+git clone --branch "v2.2.0" https://github.com/gflags/gflags.git
 cd gflags
 mkdir %buildfolder%
 cd %buildfolder%
@@ -40,12 +41,12 @@ cmake --build . --target ALL_BUILD --config Debug
 
 ::Glog
 chdir %ceresthirdparty%
-git clone https://github.com/google/glog.git
+git clone --branch "master" https://github.com/google/glog.git
 cd glog
 mkdir %buildfolder%
 cd %buildfolder% 
  :: add this to the project to avoid linker errors "shlwapi.lib" as well as GOOGLE_GLOG_DLL_DECL=;GFLAGS_IS_A_DLL=0;
-cmake .. -G "Visual Studio 14 Win64" -Dgflags_DIR=%ceresthirdparty%\gflags\%buildfolder%
+cmake .. -G %buildtype% -Dgflags_DIR=%ceresthirdparty%\gflags\%buildfolder%
 cmake --build . --target ALL_BUILD --config Release
 cmake --build . --target ALL_BUILD --config Debug
 
