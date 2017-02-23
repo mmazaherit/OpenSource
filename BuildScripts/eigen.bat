@@ -5,7 +5,7 @@ IF "%~1"=="" (
 set eigenroot=%~1
 )
 IF "%~2"=="" ( 
- set gflagstag=3.3.2
+ set eigentag=3.3.2
 )ElSE (
 set eigentag=%~2
 )

@@ -3,12 +3,12 @@ IF "%~1"=="" (
 )ElSE (
 set suitesparseroot=%~1
 )
- 
-set mypath=%~dp0
+
+CALL config.bat
+
 set package=SuiteSparse-4.5.4
 set metis=metis-5.1.0
-set buildtype="Visual Studio 14 Win64"
-set buildfolder=buildx64
+
 chdir %suitesparseroot%
 git clone https://github.com/jlblancoc/suitesparse-metis-for-windows.git
 
@@ -29,5 +29,4 @@ mkdir %buildfolder%
 cd %buildfolder%
 
 cmake .. -G %buildtype% -DCMAKE_CXX_FLAGS="/MP6"
-cmake --build . --target ALL_BUILD --config Release
-cmake --build . --target ALL_BUILD --config Debug
+%cmakebuild%

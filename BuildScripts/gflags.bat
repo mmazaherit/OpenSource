@@ -9,9 +9,8 @@ IF "%~2"=="" (
 )ElSE (
 set gflagsroot=%~2
 )
-set mypath=%~dp0
-set buildtype="Visual Studio 14 Win64" 
-set buildfolder=buildx64
+
+CALL config.bat
 
 chdir %gflagsroot%
 git clone --branch %gflagstag% https://github.com/gflags/gflags.git
@@ -19,5 +18,4 @@ cd gflags
 mkdir %buildfolder%
 cd %buildfolder%
 cmake .. -G %buildtype%
-cmake --build . --target ALL_BUILD --config Release
-cmake --build . --target ALL_BUILD --config Debug
+%cmakebuild%
