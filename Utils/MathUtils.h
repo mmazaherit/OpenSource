@@ -29,7 +29,7 @@ template<typename T>
 inline void ComputeMean(int n, const T* const Values, double MeanMinMax[3])
 {
 	double Sum=0;
-	T Max = std::numeric_limits<T>::min();
+	T Max = -std::numeric_limits<T>::max();
 	T Min = std::numeric_limits<T>::max();
 	
 	for (int i = 0; i < n; i++)
