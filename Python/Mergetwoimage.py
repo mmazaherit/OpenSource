@@ -1,7 +1,7 @@
 import sys
 from PIL import Image
 
-folder='D:/Tasks/Polaris Camera Calibration/18 Nov Calibration/Verification/StichedRectified/'
+folder='D:/path/'
 images = map(Image.open, [folder+'1_0.jpeg',folder+'0_0.jpeg' ])
 widths, heights = zip(*(i.size for i in images))
 

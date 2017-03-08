@@ -1,7 +1,7 @@
 #swap camera images
 import os
 from os import rename, listdir
-folder='D:/Tasks/Polaris Camera Calibration/outside/'
+folder='D:/path/outside/'
 n_images=200
 for i in range(0,n_images):
     f1=folder+'0_'+str(i)+'.jpg'

@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from PIL import Image
 import os
-folder = 'D:/Tasks/Polaris Camera Calibration/18 Nov Calibration/Verification/StichedRectified/'
+folder = 'D:/path/'
 for i in range(0,1):
     epoch=str(i)
     img1=cv2.imread(folder+'1_'+epoch+'.jpeg')
