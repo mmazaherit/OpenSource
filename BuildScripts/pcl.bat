@@ -47,7 +47,7 @@ cmake .. -G %buildtype%
 %cmakebuild%
 
 ::install eigen
-CALL %mypath%\eigen.bat %pclthirdparty%
+CALL %mypath%eigen.bat %pclthirdparty%
 
 chdir %pcl% 
 mkdir %buildfolder%
