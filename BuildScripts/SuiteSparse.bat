@@ -15,8 +15,8 @@ git clone https://github.com/jlblancoc/suitesparse-metis-for-windows.git
 cd suitesparse-metis-for-windows
 %mypath%wget.exe "http://faculty.cse.tamu.edu/davis/SuiteSparse/%package%.tar.gz" 
 %mypath%wget.exe "http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/%metis%.tar.gz"
-%mypath%7z.exe x %package%.tar.gz -so | %mypath%7z.exe x -si -ttar
-%mypath%7z.exe x %metis%.tar.gz -so | %mypath%7z.exe x -si -ttar
+%mypath0%7z.exe x %package%.tar.gz -so | %mypath0%7z.exe x -si -ttar
+%mypath0%7z.exe x %metis%.tar.gz -so | %mypath0%7z.exe x -si -ttar
 
 xcopy %metis%/*.* metis /y /s 
 
