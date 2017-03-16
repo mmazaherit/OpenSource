@@ -1,8 +1,9 @@
 IF "%~1"=="" (
- set ceresroot=%cd%
+ set ceresroot0=%cd%
 )ElSE (
-set ceresroot=%~1
+set ceresroot0=%~1
 )
+set ceresroot=%ceresroot0:\=/%
 
 CALL config.bat
 

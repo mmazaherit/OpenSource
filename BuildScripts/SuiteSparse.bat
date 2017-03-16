@@ -1,9 +1,9 @@
 IF "%~1"=="" (
- set suitesparseroot=%cd%
+ set suitesparseroot0=%cd%
 )ElSE (
-set suitesparseroot=%~1
+set suitesparseroot0=%~1
 )
-
+set suitesparseroot=%suitesparseroot0:\=/%
 CALL config.bat
 
 set package=SuiteSparse-4.5.4

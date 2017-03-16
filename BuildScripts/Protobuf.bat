@@ -1,8 +1,10 @@
 IF "%~1"=="" (
- set protobufroot=%cd%
+ set protobufroot0=%cd%
 )ElSE (
-set protobufroot=%~1
+set protobufroot0=%~1
 )
+
+set protobufroot=%protobufroot0:\=/%
 
 set protobuftag=v3.2.0
 
@@ -22,5 +24,5 @@ cd ..
 mkdir %buildfolder%
 cd %buildfolder% 
  :: add this to the project to avoid linker errors "shlwapi.lib" as well as GOOGLE_GLOG_DLL_DECL=;GFLAGS_IS_A_DLL=0;
-cmake ../cmake -G %buildtype%
+cmake ../cmake -G %buildtype% -Dgtest_disable_pthreads=1 -DCMAKE_USE_PTHREADS_INIT=0
 %cmakebuild%
