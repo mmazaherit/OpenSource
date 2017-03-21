@@ -1,0 +1,149 @@
+ CMakeLists.txt                                       | 16 +++++++++-------
+ cartographer/common/math.h                           |  4 ++--
+ cartographer/common/thread_pool.cc                   |  2 +-
+ cartographer/io/cairo_types.h                        |  2 +-
+ cartographer/io/xray_points_processor.cc             |  8 ++++----
+ cartographer/kalman_filter/unscented_kalman_filter.h |  4 ++--
+ cartographer/mapping_2d/submaps.cc                   |  0
+ 7 files changed, 19 insertions(+), 17 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3c4a506..ff6188e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -23,18 +23,18 @@ set(CARTOGRAPHER_VERSION ${CARTOGRAPHER_MAJOR_VERSION}.${CARTOGRAPHER_MINOR_VERS
+ set(CARTOGRAPHER_SOVERSION ${CARTOGRAPHER_MAJOR_VERSION}.${CARTOGRAPHER_MINOR_VERSION})
+ 
+ include("${PROJECT_SOURCE_DIR}/cmake/functions.cmake")
+-google_initialize_cartographer_project()
+-google_enable_testing()
++#google_initialize_cartographer_project()
++#google_enable_testing()
+ 
+ find_package(Boost REQUIRED COMPONENTS iostreams)
+ find_package(Ceres REQUIRED COMPONENTS SparseLinearAlgebraLibrary)
+-find_package(Eigen3 REQUIRED)
+-find_package(LuaGoogle REQUIRED)
++#find_package(Eigen3 REQUIRED)
++#find_package(LuaGoogle REQUIRED)
+ find_package(Protobuf REQUIRED)
+ 
+ include(FindPkgConfig)
+-PKG_SEARCH_MODULE(CAIRO REQUIRED cairo>=1.12.16)
+-
++#PKG_SEARCH_MODULE(CAIRO REQUIRED cairo>=1.12.16)
++find_package(CAIRO)
+ # Only build the documentation if we can find Sphinx.
+ find_package(Sphinx)
+ if(SPHINX_FOUND)
+@@ -53,11 +53,13 @@ install(DIRECTORY cmake DESTINATION share/cartographer/)
+ 
+ file(GLOB_RECURSE ALL_SRCS "*.cc" "*.h")
+ file(GLOB_RECURSE ALL_TESTS "*_test.cc")
++file(GLOB_RECURSE ALL_THIRDPARTHY "${PROJECT_SOURCE_DIR}/ThirdParty/*.cc" "${PROJECT_SOURCE_DIR}/ThirdParty/*.h") 
+ file(GLOB_RECURSE ALL_EXECUTABLES "*_main.cc")
+ list(REMOVE_ITEM ALL_SRCS ${ALL_TESTS})
+ list(REMOVE_ITEM ALL_SRCS ${ALL_EXECUTABLES})
++list(REMOVE_ITEM ALL_SRCS ${ALL_THIRDPARTHY})
+ 
+-file(GLOB_RECURSE ALL_PROTOS "*.proto")
++file(GLOB_RECURSE ALL_PROTOS "${PROJECT_SOURCE_DIR}/cartographer/*.proto")
+ set(ALL_PROTO_SRCS)
+ set(ALL_PROTO_HDRS)
+ foreach(ABS_FIL ${ALL_PROTOS})
+diff --git a/cartographer/common/math.h b/cartographer/common/math.h
+index 286b2d7..29c8288 100644
+--- a/cartographer/common/math.h
++++ b/cartographer/common/math.h
+@@ -16,7 +16,7 @@
+ 
+ #ifndef CARTOGRAPHER_COMMON_MATH_H_
+ #define CARTOGRAPHER_COMMON_MATH_H_
+-
++#define M_PI 3.14159265359
+ #include <cmath>
+ #include <vector>
+ 
+@@ -86,7 +86,7 @@ T atan2(const Eigen::Matrix<T, 2, 1>& vector) {
+ // Eigenvalues of 'A' are clamped to be at least 'lower_eigenvalue_bound'.
+ template <int N>
+ Eigen::Matrix<double, N, N> ComputeSpdMatrixSqrtInverse(
+-    const Eigen::Matrix<double, N, N>& A, const double lower_eigenvalue_bound) {
++    const Eigen::Matrix<double, N, N, Eigen::ColMajor,N,N>& A, const double lower_eigenvalue_bound) {
+   Eigen::SelfAdjointEigenSolver<Eigen::Matrix<double, N, N>>
+       covariance_eigen_solver(A);
+   if (covariance_eigen_solver.info() != Eigen::Success) {
+diff --git a/cartographer/common/thread_pool.cc b/cartographer/common/thread_pool.cc
+index 12e84d5..19181a3 100644
+--- a/cartographer/common/thread_pool.cc
++++ b/cartographer/common/thread_pool.cc
+@@ -16,7 +16,7 @@
+ 
+ #include "cartographer/common/thread_pool.h"
+ 
+-#include <unistd.h>
++//#include <unistd.h>
+ #include <algorithm>
+ #include <chrono>
+ #include <numeric>
+diff --git a/cartographer/io/cairo_types.h b/cartographer/io/cairo_types.h
+index 568df4b..c05d69e 100644
+--- a/cartographer/io/cairo_types.h
++++ b/cartographer/io/cairo_types.h
+@@ -3,7 +3,7 @@
+ 
+ #include <memory>
+ 
+-#include "cairo/cairo.h"
++#include "cairo.h"
+ 
+ namespace cartographer {
+ namespace io {
+diff --git a/cartographer/io/xray_points_processor.cc b/cartographer/io/xray_points_processor.cc
+index 36f418c..0cf48b4 100644
+--- a/cartographer/io/xray_points_processor.cc
++++ b/cartographer/io/xray_points_processor.cc
+@@ -20,7 +20,7 @@
+ #include <string>
+ 
+ #include "Eigen/Core"
+-#include "cairo/cairo.h"
++#include "cairo.h"
+ #include "cartographer/common/lua_parameter_dictionary.h"
+ #include "cartographer/common/make_unique.h"
+ #include "cartographer/common/math.h"
+@@ -114,9 +114,9 @@ void WritePng(const PixelDataMatrix& mat, FileWriter* const file_writer) {
+           mat.cols(), mat.rows(), stride),
+       cairo_surface_destroy);
+   CHECK_EQ(cairo_surface_status(surface.get()), CAIRO_STATUS_SUCCESS);
+-  CHECK_EQ(cairo_surface_write_to_png_stream(surface.get(), &CairoWriteCallback,
+-                                             file_writer),
+-           CAIRO_STATUS_SUCCESS);
++  //CHECK_EQ(cairo_surface_write_to_png_stream(surface.get(), &CairoWriteCallback,
++   //                                          file_writer),
++   //        CAIRO_STATUS_SUCCESS);
+   CHECK(file_writer->Close());
+ }
+ 
+diff --git a/cartographer/kalman_filter/unscented_kalman_filter.h b/cartographer/kalman_filter/unscented_kalman_filter.h
+index d62c1b1..e698f82 100644
+--- a/cartographer/kalman_filter/unscented_kalman_filter.h
++++ b/cartographer/kalman_filter/unscented_kalman_filter.h
+@@ -44,7 +44,7 @@ Eigen::Matrix<FloatType, N, N> OuterProduct(
+ 
+ // Checks if 'A' is a symmetric matrix.
+ template <typename FloatType, int N>
+-void CheckSymmetric(const Eigen::Matrix<FloatType, N, N>& A) {
++void CheckSymmetric(const Eigen::Matrix<FloatType, N, N,Eigen::ColMajor,N,N>& A) {
+   // This should be pretty much Eigen::Matrix<>::Zero() if the matrix is
+   // symmetric.
+   const FloatType norm = (A - A.transpose()).norm();
+@@ -56,7 +56,7 @@ void CheckSymmetric(const Eigen::Matrix<FloatType, N, N>& A) {
+ // Returns the matrix square root of a symmetric positive semidefinite matrix.
+ template <typename FloatType, int N>
+ Eigen::Matrix<FloatType, N, N> MatrixSqrt(
+-    const Eigen::Matrix<FloatType, N, N>& A) {
++    const Eigen::Matrix<FloatType, N, N, Eigen::ColMajor,N,N>& A) {
+   CheckSymmetric(A);
+ 
+   Eigen::SelfAdjointEigenSolver<Eigen::Matrix<FloatType, N, N>>

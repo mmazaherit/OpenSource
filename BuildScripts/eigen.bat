@@ -1,11 +1,11 @@
 IF "%~1"=="" (
  set eigenroot=%cd%
- set eigentag=3.3.2
+ set eigentag=3.3.3
 )ElSE (
 set eigenroot=%~1
 )
 IF "%~2"=="" ( 
- set eigentag=3.3.2
+ set eigentag=3.3.3
 )ElSE (
 set eigentag=%~2
 )
@@ -20,3 +20,9 @@ chdir %eigenroot%
 set cmd="dir eigen-eigen* /b"
 FOR /F "tokens=*" %%i IN (' %cmd% ') DO SET eigendir=%%i
 rename "%eigendir%" "eigen-eigen"
+
+
+cd eigen-eigen
+mkdir %buildfolder%
+cd %buildfolder%
+cmake .. -G %buildtype% 

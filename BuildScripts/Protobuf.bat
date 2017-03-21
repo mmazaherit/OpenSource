@@ -6,8 +6,8 @@ set protobufroot0=%~1
 
 set protobufroot=%protobufroot0:\=/%
 
-::set protobuftag=v3.2.0
-set protobuftag=master
+set protobuftag=v3.2.0
+::set protobuftag=master
 
 CALL config.bat
 

@@ -8,7 +8,7 @@ set ceresroot=%ceresroot0:\=/%
 CALL config.bat
 
 set cerestag="1.12.0"
-set eigentag="3.3.2"
+set eigentag="3.3.3"
 
 chdir %ceresroot%
 git clone --branch %cerestag% https://github.com/ceres-solver/ceres-solver.git
