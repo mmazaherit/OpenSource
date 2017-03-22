@@ -42,15 +42,15 @@ cmake .. -G %buildtype%
 %cmakebuild%
 
 chdir %cairothirdparty%
-git clone https://github.com/CMakePorts/fontconfig.git
-cd fontconfig
-mkdir %buildfolder%
-cd %buildfolder%
-cmake .. -G %buildtype% -DEXPAT_LIBRARY=%cairothirdparty%/libexpat/expat/%buildfolder%/Release/expat.lib -DEXPAT_INCLUDE_DIR=%cairothirdparty%/libexpat/expat/lib -DFREETYPE_LIBRARY=%cairothirdparty%/freetype2/%buildfolder%/Release/freetype2.lib  -DFREETYPE_INCLUDE_DIRS=%cairothirdparty%/freetype2/src
-%cmakebuild%
+::git clone https://github.com/CMakePorts/fontconfig.git
+git clone https://github.com/tgoyne/fontconfig.git
+::cd fontconfig
+::mkdir %buildfolder%
+::cd %buildfolder%
+::cmake .. -G %buildtype% -DEXPAT_LIBRARY=%cairothirdparty%/libexpat/expat/%buildfolder%/Release/expat.lib -DEXPAT_INCLUDE_DIR=%cairothirdparty%/libexpat/expat/lib -DFREETYPE_LIBRARY=%cairothirdparty%/freetype2/%buildfolder%/Release/freetype2.lib  -DFREETYPE_INCLUDE_DIRS=%cairothirdparty%/freetype2/src
+::%cmakebuild%
 
 chdir %cairoroot%/cairo
 mkdir %buildfolder%
 cd %buildfolder%
-cmake .. -G %buildtype%  -DPIXMAN_INCLUDE_DIRS=%cairothirdparty%/pixman -DPIXMAN_LIBRARIES=%cairothirdparty%/pixman/%buildfolder%/pixman/Release/pixman-1_static.lib -DZLIB_INCLUDE_DIR=%cairothirdparty%/zlib;%cairothirdparty%/zlib/%buildfolder% -DZLIB_LIBRARY=%cairothirdparty%/zlib/%buildfolder%/Release/zlibstatic.lib -DPNG_PNG_INCLUDE_DIR=%cairothirdparty%/libpng -DPNG_LIBRARY=%cairothirdparty%/libpng/%buildfolder%/Release/libpng16_static.lib -DFONTCONFIG_INCLUDE_DIRS=%cairothirdparty%/fontconfig/
-%cmakebuild%
+cmake .. -G %buildtype% -DPIXMAN_INCLUDE_DIR=%cairothirdparty%/pixman/pixman;%cairothirdparty%/pixman/%buildfolder%/pixman -DPIXMAN_LIBRARY=%cairothirdparty%/pixman/%buildfolder%/pixman/Release/pixman-1_static.lib -DZLIB_INCLUDE_DIR=%cairothirdparty%/zlib;%cairothirdparty%/zlib/%buildfolder% -DZLIB_LIBRARY=%cairothirdparty%/zlib/%buildfolder%/Release/zlibstatic.lib -DPNG_PNG_INCLUDE_DIR=%cairothirdparty%/libpng -DPNG_LIBRARY=%cairothirdparty%/libpng/%buildfolder%/Release/libpng16.lib -DFONTCONFIG_INCLUDE_DIRS=%cairothirdparty%/fontconfig/src -DFREETYPE_INCLUDE_DIR_freetype2=%cairothirdparty%/freetype2/src -DFREETYPE_INCLUDE_DIR_ft2build=%cairothirdparty%/freetype2/%buildfolder%/freetype -DFREETYPE_LIBRARY_RELEASE=%cairothirdparty%/freetype2/%buildfolder%/Release/freetype.lib  -DFREETYPE_LIBRARY_DEBUG=%cairothirdparty%/freetype/%buildfolder%/Debug/freetyped.lib  -DPNG_PNG_INCLUDE_DIR=%cairothirdparty%/libpng;%cairothirdparty%/libpng/%buildfolder%  -DBZIP2_INCLUDE_DIR=%cairothirdparty%/bzip2/include -DBZIP2_LIBRARY_RELEASE=%cairothirdparty%/bzip2/lib/bzip2.lib -DBZIP2_LIBRARY_DEBUG=%cairothirdparty%/bzip2/lib/bzip2.lib

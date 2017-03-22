@@ -3,7 +3,7 @@
 set buildtype="Visual Studio 14 Win64" 
 set buildfolder=buildx64
 ::boost settings
-set boostver=1_63
+set boostver=1_61
 set boost=D:/ThirdParty/boost_%boostver%_0
 set boostlib=%boost%/lib64-msvc-14.0
 set boostvcver=vc140
