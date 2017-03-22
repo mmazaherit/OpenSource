@@ -28,14 +28,8 @@ cd %buildfolder%
 cmake .. -G %buildtype%
 %cmakebuild%
 
-::download zlib
-chdir %pclthirdparty%
-git clone --branch "v1.2.11" https://github.com/madler/zlib.git
-cd zlib
-mkdir %buildfolder%
-cd %buildfolder%
-cmake .. -G %buildtype%
-%cmakebuild%
+::download and build zlib
+call %mypath%zlib.bat %pclthirdparty% "v1.2.11"
 
 ::qhull
 chdir %pclthirdparty%
