@@ -4,11 +4,11 @@
  cartographer/io/cairo_types.h                        |  2 +-
  cartographer/io/xray_points_processor.cc             |  8 ++++----
  cartographer/kalman_filter/unscented_kalman_filter.h |  4 ++--
- cartographer/mapping_2d/submaps.cc                   |  0
- 7 files changed, 19 insertions(+), 17 deletions(-)
+ cartographer/sensor/laser_test.cc                    |  2 +-
+ 7 files changed, 20 insertions(+), 18 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 3c4a506..ff6188e 100644
+index 3c4a506..ad22440 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -23,18 +23,18 @@ set(CARTOGRAPHER_VERSION ${CARTOGRAPHER_MAJOR_VERSION}.${CARTOGRAPHER_MINOR_VERS
@@ -18,21 +18,21 @@ index 3c4a506..ff6188e 100644
 -google_initialize_cartographer_project()
 -google_enable_testing()
 +#google_initialize_cartographer_project()
-+#google_enable_testing()
++google_enable_testing()
  
  find_package(Boost REQUIRED COMPONENTS iostreams)
  find_package(Ceres REQUIRED COMPONENTS SparseLinearAlgebraLibrary)
 -find_package(Eigen3 REQUIRED)
 -find_package(LuaGoogle REQUIRED)
 +#find_package(Eigen3 REQUIRED)
-+#find_package(LuaGoogle REQUIRED)
++find_package(Lua REQUIRED)
  find_package(Protobuf REQUIRED)
  
  include(FindPkgConfig)
 -PKG_SEARCH_MODULE(CAIRO REQUIRED cairo>=1.12.16)
 -
 +#PKG_SEARCH_MODULE(CAIRO REQUIRED cairo>=1.12.16)
-+find_package(CAIRO)
++#find_package(CAIRO)
  # Only build the documentation if we can find Sphinx.
  find_package(Sphinx)
  if(SPHINX_FOUND)
@@ -147,3 +147,16 @@ index d62c1b1..e698f82 100644
    CheckSymmetric(A);
  
    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<FloatType, N, N>>
+diff --git a/cartographer/sensor/laser_test.cc b/cartographer/sensor/laser_test.cc
+index e1bfd6d..25ded0a 100644
+--- a/cartographer/sensor/laser_test.cc
++++ b/cartographer/sensor/laser_test.cc
+@@ -20,7 +20,7 @@
+ #include <vector>
+ 
+ #include "gmock/gmock.h"
+-
++#define M_PI_4 0.785398163397448
+ namespace cartographer {
+ namespace sensor {
+ namespace {

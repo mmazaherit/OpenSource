@@ -20,7 +20,7 @@ git clone -b release-1.7.0 https://github.com/google/googletest.git gtest
 
 mkdir %buildfolder%
 cd %buildfolder%
-cmake .. -G %buildtype%
+cmake .. -G %buildtype% -DBUILD_SHARED_LIBS=1 -Dgtest_disable_pthreads=1
 %cmakebuild%
 
 
@@ -29,5 +29,5 @@ chdir %protobufroot%\protobuf
 mkdir %buildfolder%
 cd %buildfolder% 
  :: add this to the project to avoid linker errors "shlwapi.lib" as well as GOOGLE_GLOG_DLL_DECL=;GFLAGS_IS_A_DLL=0; -Dprotobuf_BUILD_TESTS=0
-cmake ../cmake -G %buildtype% -Dgtest_disable_pthreads=1 -DCMAKE_USE_PTHREADS_INIT=0 
+cmake ../cmake -G %buildtype% -Dgtest_disable_pthreads=1 -DCMAKE_USE_PTHREADS_INIT=0 -Dprotobuf_BUILD_SHARED_LIBS=1
 %cmakebuild%
