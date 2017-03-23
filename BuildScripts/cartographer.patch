@@ -1,3 +1,23 @@
+<<<<<<< .mine
+ CMakeLists.txt                                       | 14 ++++++++------
+ cartographer/common/math.h                           |  4 ++--
+ cartographer/common/thread_pool.cc                   |  2 +-
+ cartographer/io/cairo_types.h                        |  2 +-
+ cartographer/io/xray_points_processor.cc             |  8 ++++----
+ cartographer/kalman_filter/unscented_kalman_filter.h |  4 ++--
+ cartographer/sensor/range_data_test.cc               |  2 +-
+ cmake/functions.cmake                                |  2 +-
+ 8 files changed, 20 insertions(+), 18 deletions(-)
+||||||| .r33
+ CMakeLists.txt                                       | 16 +++++++++-------
+ cartographer/common/math.h                           |  4 ++--
+ cartographer/common/thread_pool.cc                   |  2 +-
+ cartographer/io/cairo_types.h                        |  2 +-
+ cartographer/io/xray_points_processor.cc             |  8 ++++----
+ cartographer/kalman_filter/unscented_kalman_filter.h |  4 ++--
+ cartographer/sensor/laser_test.cc                    |  2 +-
+ 7 files changed, 20 insertions(+), 18 deletions(-)
+=======
  CMakeLists.txt                                     | 25 ++++++++++++----------
  cartographer/common/math.h                         |  4 ++--
  cartographer/common/thread_pool.cc                 |  2 +-
@@ -7,9 +27,16 @@
  cartographer/sensor/laser_test.cc                  |  2 +-
  cmake/functions.cmake                              |  2 +-
  8 files changed, 26 insertions(+), 23 deletions(-)
+>>>>>>> .r35
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
+<<<<<<< .mine
+index 3c4a506..404325f 100644
+||||||| .r33
+index 3c4a506..ad22440 100644
+=======
 index 3c4a506..988780e 100644
+>>>>>>> .r35
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -23,18 +23,18 @@ set(CARTOGRAPHER_VERSION ${CARTOGRAPHER_MAJOR_VERSION}.${CARTOGRAPHER_MINOR_VERS
@@ -174,10 +201,10 @@ index d62c1b1..e698f82 100644
    CheckSymmetric(A);
  
    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<FloatType, N, N>>
-diff --git a/cartographer/sensor/laser_test.cc b/cartographer/sensor/laser_test.cc
-index e1bfd6d..25ded0a 100644
---- a/cartographer/sensor/laser_test.cc
-+++ b/cartographer/sensor/laser_test.cc
+diff --git a/cartographer/sensor/range_data_test.cc b/cartographer/sensor/range_data_test.cc
+index f439f1c..7458ff7 100644
+--- a/cartographer/sensor/range_data_test.cc
++++ b/cartographer/sensor/range_data_test.cc
 @@ -20,7 +20,7 @@
  #include <vector>
  
@@ -187,6 +214,20 @@ index e1bfd6d..25ded0a 100644
  namespace cartographer {
  namespace sensor {
  namespace {
+<<<<<<< .mine
+diff --git a/cmake/functions.cmake b/cmake/functions.cmake
+index fbf2af1..7919f2d 100644
+--- a/cmake/functions.cmake
++++ b/cmake/functions.cmake
+@@ -122,5 +122,5 @@ endmacro()
+ 
+ macro(google_enable_testing)
+   enable_testing()
+-  find_package(GMock REQUIRED)
++  find_package(GMock)
+ endmacro()
+||||||| .r33
+=======
 diff --git a/cmake/functions.cmake b/cmake/functions.cmake
 index fbf2af1..4f7093f 100644
 --- a/cmake/functions.cmake
@@ -198,3 +239,4 @@ index fbf2af1..4f7093f 100644
 -  find_package(GMock REQUIRED)
 +  find_package(GMock )
  endmacro()
+>>>>>>> .r35
