@@ -1,14 +1,15 @@
- CMakeLists.txt                                       | 16 +++++++++-------
- cartographer/common/math.h                           |  4 ++--
- cartographer/common/thread_pool.cc                   |  2 +-
- cartographer/io/cairo_types.h                        |  2 +-
- cartographer/io/xray_points_processor.cc             |  8 ++++----
- cartographer/kalman_filter/unscented_kalman_filter.h |  4 ++--
- cartographer/sensor/laser_test.cc                    |  2 +-
- 7 files changed, 20 insertions(+), 18 deletions(-)
+ CMakeLists.txt                                     | 25 ++++++++++++----------
+ cartographer/common/math.h                         |  4 ++--
+ cartographer/common/thread_pool.cc                 |  2 +-
+ cartographer/io/cairo_types.h                      |  2 +-
+ cartographer/io/xray_points_processor.cc           |  8 +++----
+ .../kalman_filter/unscented_kalman_filter.h        |  4 ++--
+ cartographer/sensor/laser_test.cc                  |  2 +-
+ cmake/functions.cmake                              |  2 +-
+ 8 files changed, 26 insertions(+), 23 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 3c4a506..ad22440 100644
+index 3c4a506..988780e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -23,18 +23,18 @@ set(CARTOGRAPHER_VERSION ${CARTOGRAPHER_MAJOR_VERSION}.${CARTOGRAPHER_MINOR_VERS
@@ -16,9 +17,8 @@ index 3c4a506..ad22440 100644
  
  include("${PROJECT_SOURCE_DIR}/cmake/functions.cmake")
 -google_initialize_cartographer_project()
--google_enable_testing()
 +#google_initialize_cartographer_project()
-+google_enable_testing()
+ google_enable_testing()
  
  find_package(Boost REQUIRED COMPONENTS iostreams)
  find_package(Ceres REQUIRED COMPONENTS SparseLinearAlgebraLibrary)
@@ -51,6 +51,33 @@ index 3c4a506..ad22440 100644
  set(ALL_PROTO_SRCS)
  set(ALL_PROTO_HDRS)
  foreach(ABS_FIL ${ALL_PROTOS})
+@@ -101,12 +103,13 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${LUA_LIBRARIES})
+ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+   "${Boost_INCLUDE_DIRS}")
+ target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
+-
+-target_link_libraries(${PROJECT_NAME} PUBLIC webp)
++target_include_directories(${PROJECT_NAME} PUBLIC
++  "${webp_INCLUDE_DIR}")
++target_link_libraries(${PROJECT_NAME} PUBLIC "${webp_LIBRARY}")
+ 
+ # We expect find_package(Ceres) to have located these for us.
+-target_link_libraries(${PROJECT_NAME} PUBLIC glog)
+-target_link_libraries(${PROJECT_NAME} PUBLIC gflags)
++#target_link_libraries(${PROJECT_NAME} PUBLIC glog)
++#target_link_libraries(${PROJECT_NAME} PUBLIC gflags)
+ 
+ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+   "${CAIRO_INCLUDE_DIRS}")
+@@ -116,7 +119,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+   ${PROTOBUF_INCLUDE_DIR})
+ # TODO(hrapp): This should not explicitly list pthread and use
+ # PROTOBUF_LIBRARIES, but that failed on first try.
+-target_link_libraries(${PROJECT_NAME} PUBLIC ${PROTOBUF_LIBRARY} pthread)
++target_link_libraries(${PROJECT_NAME} PUBLIC ${PROTOBUF_LIBRARY} )
+ 
+ # Add the binary directory first, so that port.h is included after it has
+ # been generated.
 diff --git a/cartographer/common/math.h b/cartographer/common/math.h
 index 286b2d7..29c8288 100644
 --- a/cartographer/common/math.h
@@ -160,3 +187,14 @@ index e1bfd6d..25ded0a 100644
  namespace cartographer {
  namespace sensor {
  namespace {
+diff --git a/cmake/functions.cmake b/cmake/functions.cmake
+index fbf2af1..4f7093f 100644
+--- a/cmake/functions.cmake
++++ b/cmake/functions.cmake
+@@ -122,5 +122,5 @@ endmacro()
+ 
+ macro(google_enable_testing)
+   enable_testing()
+-  find_package(GMock REQUIRED)
++  find_package(GMock )
+ endmacro()
