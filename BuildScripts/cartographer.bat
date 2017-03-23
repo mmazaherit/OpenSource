@@ -14,7 +14,8 @@ CALL config.bat
 chdir %cartoroot%
 git clone https://github.com/googlecartographer/cartographer.git
 cd cartographer
-git apply %mypath%cartographer.patch
+::git apply %mypath%cartographer.patch
+git am --3way --ignore-space-change --keep-cr  %mypath%cartographer.patch
 
 mkdir ThirdParty
 set cartothirdparty=%cartoroot%/cartographer/ThirdParty
@@ -37,14 +38,11 @@ chdir %cartothirdparty%
 
 
 CALL %mypath%ceres.bat %cartothirdparty%
-set suitesparse=%cartothirdparty%/ceres-solver/ThirdParty/suitesparse-metis-for-windows/SuiteSparse
-
 CALL %mypath%protobuf.bat %cartothirdparty%
-set protobuf=%cartothirdparty%/protobuf
-
 CALL %mypath%cairo.bat %cartothirdparty%
 
-
+set suitesparse=%cartothirdparty%/ceres-solver/ThirdParty/suitesparse-metis-for-windows/SuiteSparse
+set protobuf=%cartothirdparty%/protobuf
 
 chdir %cartoroot%/cartographer/%buildfolder%
 
