@@ -2,7 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <BOOST_FOLDER>D:\Packages\boost_1_60_0</BOOST_FOLDER>
+    <boostvcver>vc120</boostvcver>
+    <boostver>1_63</boostver>
+    <BOOST_FOLDER>D:/ThirdParty/boost_$(boostver)_0</BOOST_FOLDER>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup>
@@ -11,10 +13,17 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(BOOST_FOLDER)\lib64-msvc-12.0\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <BuildMacro Include="boostvcver">
+      <Value>$(boostvcver)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="boostver">
+      <Value>$(boostver)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
     <BuildMacro Include="BOOST_FOLDER">
       <Value>$(BOOST_FOLDER)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
