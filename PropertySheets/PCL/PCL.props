@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <PCL_FOLDER>D:/ThirdParty/pcl</PCL_FOLDER>
+    <PCL_THIRDPARTY>$(PCL_FOLDER)\ThirdParty</PCL_THIRDPARTY>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(PCL_FOLDER)\common\include;$(PCL_FOLDER)\geometry\include;$(PCL_FOLDER)\filters\include;$(PCL_FOLDER)\octree\include;$(PCL_FOLDER)\io\include;$(PCL_FOLDER)\people\include;$(PCL_FOLDER)\kdtree\include;$(PCL_FOLDER)\segmentation\include;$(PCL_FOLDER)\search\include;$(PCL_FOLDER)\features\include;$(PCL_FOLDER)\sample_consensus\include;$(PCL_FOLDER)\visualization\include;$(PCL_FOLDER)\surface\include;$(PCL_FOLDER)\build$(Platform)\include;$(PCL_THIRDPARTY)\eigen-eigen;$(PCL_THIRDPARTY)\flann\src\cpp;$(PCL_THIRDPARTY)\OpenNI-Stable-1.5.7.10\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(PCL_FOLDER)\build$(Platform)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /d /y "$(PCL_FOLDER)\build$(Platform)\bin\pcl_*$(Configuration).dll" "$(OutDir)"
+xcopy /d /y "$(PCL_FOLDER)\build$(Platform)\bin\boost_*.dll" "$(OutDir)"
+xcopy /d /y "$(PACKAGE_FOLDER)\libbz2\libbz2.dll" "$(OutDir)"
+%(Command)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="PCL_FOLDER">
+      <Value>$(PCL_FOLDER)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="PCL_THIRDPARTY">
+      <Value>$(PCL_THIRDPARTY)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
