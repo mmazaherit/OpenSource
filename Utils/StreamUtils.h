@@ -6,8 +6,8 @@
 #include <sstream>
 #include <vector>
 #include <map>
-#include <unordered_map>
 #include <istream>
+#include <iostream>
 
 #ifdef WIN32
     #include <windows.h>
@@ -33,9 +33,9 @@ inline std::string &trim(std::string &s, const char* t = " \t\n\r\f\v")
     return ltrim(rtrim(s, t), t);
 }
 
-inline std::vector<std::vector<std::string>> ReadSpaceDelimitedFile(const char* file)
+inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
 {
-    std::vector<std::vector<std::string>> data;
+    std::vector<std::vector<std::string> > data;
     std::ifstream infile(file);
     if (!infile.is_open())
     {
@@ -99,8 +99,10 @@ inline std::string GetFileFolderName(const std::string &FilePath)
 }
 inline std::string GetMyDocsDirA()
 {
-    char szPath[MAX_PATH];
     std::string my_docs_dir;
+    
+    #ifdef WIN32
+    char szPath[MAX_PATH];
     if (SUCCEEDED(SHGetFolderPathA(NULL,
                                    CSIDL_PERSONAL | CSIDL_FLAG_CREATE,
                                    NULL,
@@ -109,21 +111,24 @@ inline std::string GetMyDocsDirA()
     {
         my_docs_dir = szPath;
     }
-    
+    #endif
     return my_docs_dir;
 };
 inline std::string GetExePathA()
 {
-
+    #ifdef WIN32
     char szPath[_MAX_PATH + 1];
     GetModuleFileNameA(0, szPath, _MAX_PATH + 1);
     
     return std::string(szPath);
+    #else
+    return "";
+    #endif
 }
 inline std::string ReadWholeFile(const std::string& FilePath)
 {
     //read the whole file
-    std::ifstream ifs(FilePath);
+    std::ifstream ifs(FilePath.c_str());
     ifs.seekg(0, std::ios::end);
     size_t length = ifs.tellg();
     std::string Buffer(length, '0');
@@ -168,11 +173,11 @@ inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory
     class dirent* ent;
     class stat st;
     
-    dir = opendir(directory);
+    dir = opendir(directory.c_str());
     while ((ent = readdir(dir)) != NULL)
     {
-        const string file_name = ent->d_name;
-        const string full_file_name = directory + "/" + file_name;
+        const std::string file_name = ent->d_name;
+        const std::string full_file_name = directory + "/" + file_name;
     
         if (file_name[0] == '.')
             continue;
@@ -194,10 +199,10 @@ inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory
 
 
 //http://stackoverflow.com/questions/6892754/creating-a-simple-configuration-file-and-parser-in-c
-inline std::unordered_map<std::string, std::string> ReadConfig(std::string &ConfigFile)
+inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFile)
 {
-    std::ifstream is_file(ConfigFile);
-    std::unordered_map<std::string, std::string> config;
+    std::ifstream is_file(ConfigFile.c_str());
+    std::map<std::string, std::string> config;
     std::string line;
     while (std::getline(is_file, line))
     {
