@@ -19,20 +19,17 @@ inline std::string &ltrim(std::string &s, const char* t = " \t\n\r\f\v")
     s.erase(0, s.find_first_not_of(t));
     return s;
 }
-
 // trim from right
 inline std::string &rtrim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     s.erase(s.find_last_not_of(t) + 1);
     return s;
 }
-
 // trim from left & right
 inline std::string &trim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     return ltrim(rtrim(s, t), t);
 }
-
 inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
 {
     std::vector<std::vector<std::string> > data;
@@ -198,6 +195,38 @@ inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory
 } // GetFilesInDirectory
 
 
+////////////////////////////////////////////////////////////////////////// VECTOR UTILS
+
+template <typename T>
+inline std::vector<size_t> sort_indexes_asc(const std::vector<T> &v)
+{
+
+    // initialize original index locations
+    std::vector<std::size_t> idx(v.size());
+    std::iota(idx.begin(), idx.end(), 0);
+    
+    // sort indexes based on comparing values in v
+    std::sort(idx.begin(), idx.end(),
+    [&v](std::size_t i1, std::size_t i2) {return v[i1] < v[i2]; });
+    
+    return idx;
+}
+template <typename T>
+inline std::vector<size_t> sort_indexes_des(const std::vector<T> &v)
+{
+
+    // initialize original index locations
+    std::vector<std::size_t> idx(v.size());
+    std::iota(idx.begin(), idx.end(), 0);
+    
+    // sort indexes based on comparing values in v
+    std::sort(idx.begin(), idx.end(),
+    [&v](std::size_t i1, std::size_t i2) {return v[i1] > v[i2]; });
+    
+    return idx;
+}
+
+
 //http://stackoverflow.com/questions/6892754/creating-a-simple-configuration-file-and-parser-in-c
 inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFile)
 {
@@ -225,6 +254,66 @@ inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFi
     is_file.close();
     
     return config;
+}
+
+////////////////////////////////////////////////////////////////////////// MATH UTILS
+template<typename T>
+static inline T DotProduct31(const T* const vec1, const T* const vec2)
+{
+    return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
+}
+template<typename T>
+static inline void Subtract31(const T* const vec1, const T* const vec2, T* vec1Minusvec2)
+{
+    vec1Minusvec2[0] = vec1[0] - vec2[0];
+    vec1Minusvec2[1] = vec1[1] - vec2[1];
+    vec1Minusvec2[2] = vec1[2] - vec2[2];
+    
+}
+
+template<typename T>
+static inline T Distance31(const T* const vec1, const T* const vec2)
+{
+    T res[3];
+    Subtract31(vec1, vec2, res);
+    return sqrt(DotProduct31(res, res));
+}
+
+
+template<typename T>
+inline void ComputeMean(int n, const T* const Values, double MeanMinMax[3])
+{
+    double Sum = 0;
+    T Max = -std::numeric_limits<T>::max();
+    T Min = std::numeric_limits<T>::max();
+    
+    for (int i = 0; i < n; i++)
+    {
+        if (Values[i] > Max)
+        {
+            Max = Values[i];
+        }
+        else if (Values[i] < Min)
+        {
+            Min = Values[i];
+        }
+        
+        Sum += Values[i];
+    }
+    
+    MeanMinMax[0] = Sum / n;
+    MeanMinMax[1] = Min;
+    MeanMinMax[2] = Max;
+    
+}
+template<typename T>
+inline double ComputeMean(int n, const T* const Values)
+{
+    double Sum = 0;
+    for (int i = 0; i < n; ++i)
+        Sum += Values[i];
+        
+    return Sum / n;
 }
 
 #endif // StreamUtils_h__
