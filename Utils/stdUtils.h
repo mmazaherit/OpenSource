@@ -8,6 +8,7 @@
 #include <map>
 #include <istream>
 #include <iostream>
+#include <iomanip>
 
 #ifdef WIN32
     #include <windows.h>
@@ -30,6 +31,16 @@ inline std::string &trim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     return ltrim(rtrim(s, t), t);
 }
+
+//http://stackoverflow.com/questions/16605967/set-precision-of-stdto-string-when-converting-floating-point-values
+template <typename T>
+static inline std::string to_string_with_precision(const T a_value, const int n = 6)
+{
+    std::ostringstream out;
+    out << std::setprecision(n) << a_value;
+    return out.str();
+}
+
 inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
 {
     std::vector<std::vector<std::string> > data;
@@ -226,6 +237,13 @@ inline std::vector<size_t> sort_indexes_des(const std::vector<T> &v)
     return idx;
 }
 
+//http://stackoverflow.com/questions/9323903/most-efficient-elegant-way-to-clip-a-number
+template <typename T>
+T inline clip(const T& n, const T& lower, const T& upper)
+{
+    return std::max(lower, std::min(n, upper));
+}
+
 
 //http://stackoverflow.com/questions/6892754/creating-a-simple-configuration-file-and-parser-in-c
 inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFile)
@@ -235,6 +253,8 @@ inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFi
     std::string line;
     while (std::getline(is_file, line))
     {
+		if (line.find('#')!=std::string::npos)
+        continue;
         std::istringstream is_line(line);
         std::string key;
         if (std::getline(is_line, key, '='))
@@ -258,17 +278,16 @@ inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFi
 
 ////////////////////////////////////////////////////////////////////////// MATH UTILS
 template<typename T>
-static inline T DotProduct31(const T* const vec1, const T* const vec2)
+static inline T DotProduct31(const T* const A, const T* const B)
 {
-    return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
+    return A[0] * B[0] + A[1] * B[1] + A[2] * B[2];
 }
 template<typename T>
-static inline void Subtract31(const T* const vec1, const T* const vec2, T* vec1Minusvec2)
+static inline void Subtract31(const T* const A, const T* const B, T* AminusB)
 {
-    vec1Minusvec2[0] = vec1[0] - vec2[0];
-    vec1Minusvec2[1] = vec1[1] - vec2[1];
-    vec1Minusvec2[2] = vec1[2] - vec2[2];
-    
+    AminusB[0] = A[0] - B[0];
+    AminusB[1] = A[1] - B[1];
+    AminusB[2] = A[2] - B[2];
 }
 
 template<typename T>
@@ -281,7 +300,7 @@ static inline T Distance31(const T* const vec1, const T* const vec2)
 
 
 template<typename T>
-inline void ComputeMean(int n, const T* const Values, double MeanMinMax[3])
+static inline void ComputeMean(int n, const T* const Values, double MeanMinMax[3])
 {
     double Sum = 0;
     T Max = -std::numeric_limits<T>::max();
@@ -307,7 +326,7 @@ inline void ComputeMean(int n, const T* const Values, double MeanMinMax[3])
     
 }
 template<typename T>
-inline double ComputeMean(int n, const T* const Values)
+static inline double ComputeMean(int n, const T* const Values)
 {
     double Sum = 0;
     for (int i = 0; i < n; ++i)
