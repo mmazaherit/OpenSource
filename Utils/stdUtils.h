@@ -9,10 +9,13 @@
 #include <istream>
 #include <iostream>
 #include <iomanip>
-
+#include <algorithm>
 #ifdef WIN32
     #include <windows.h>
     #include <shlobj.h>
+#else
+    #include  <sys/stat.h>
+    #include <dirent.h>
 #endif
 // trim from left
 inline std::string &ltrim(std::string &s, const char* t = " \t\n\r\f\v")
@@ -338,6 +341,46 @@ static inline double ComputeMean(int n, const T* const Values)
         Sum += Values[i];
         
     return Sum / n;
+}
+
+
+//http://stackoverflow.com/questions/8942950/how-do-i-find-the-orthogonal-projection-of-a-point-onto-a-plane
+
+template<typename T>
+static inline void PointToPlaneProjection(const T* const Plane4Coef, const T* const point, T Projection[3])
+{
+    // a vector from arbitrary point on the plane to the point
+    T vec[3] = { 0 };
+    
+    // find the largest element of normal vector to the plane
+    int largestElement = -1;
+    if (abs(Plane4Coef[0]) >= abs(Plane4Coef[1]) && abs(Plane4Coef[0]) >= abs(Plane4Coef[2]))
+    {
+        largestElement = 0;
+    }
+    else if (abs(Plane4Coef[1]) >= abs(Plane4Coef[0]) && abs(Plane4Coef[1]) >= abs(Plane4Coef[2]))
+    {
+        largestElement = 1;
+    }
+    else if (abs(Plane4Coef[2]) >= abs(Plane4Coef[0]) && abs(Plane4Coef[2]) >= abs(Plane4Coef[1]))
+    {
+        largestElement = 2;
+    }
+    
+    vec[0] = point[0]; vec[1] = point[1]; vec[2] = point[2];
+    
+    vec[largestElement] += Plane4Coef[3] / Plane4Coef[largestElement];
+    
+    // plane normal vector check to be unit
+    T norm = sqrt(Plane4Coef[0] * Plane4Coef[0] + Plane4Coef[1] * Plane4Coef[1] + Plane4Coef[2] * Plane4Coef[2]);
+    
+    T dotProduct = (vec[0] * Plane4Coef[0] + vec[1] * Plane4Coef[1] + vec[2] * Plane4Coef[2]) / norm;
+    
+    
+    Projection[0] = point[0] - dotProduct*Plane4Coef[0] / norm;
+    Projection[1] = point[1] - dotProduct*Plane4Coef[1] / norm;
+    Projection[2] = point[2] - dotProduct*Plane4Coef[2] / norm;
+    
 }
 
 #endif // StreamUtils_h__
