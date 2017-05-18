@@ -249,7 +249,12 @@ T inline clip(const T& n, const T& lower, const T& upper)
 inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFile)
 {
     std::ifstream is_file(ConfigFile.c_str());
-    std::map<std::string, std::string> config;
+	std::map<std::string, std::string> config;
+	if (!is_file.is_open())
+    {
+        std::cout << "could not find the config file " << ConfigFile << std::endl;
+        return config;
+    }   
     std::string line;
     while (std::getline(is_file, line))
     {
