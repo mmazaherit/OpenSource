@@ -9,7 +9,7 @@ set conf=:x64-windows -Y
 .\vcpkg install opencv%conf%
 .\vcpkg install boost%conf%
 .\vcpkg install vtk%conf%
-.\vcpkg install qt%conf%
+.\vcpkg install qt5%conf%
 .\vcpkg install glog%conf%
 .\vcpkg install gflags%conf%
 .\vcpkg install qt%conf%
