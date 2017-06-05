@@ -4,7 +4,7 @@ cd vcpkg
 CALL .\bootstrap-vcpkg.bat
 .\vcpkg integrate install
 
-set conf=:x64-windows -Y
+set conf=:x64-windows 
 .\vcpkg install eigen3%conf%
 .\vcpkg install opencv%conf%
 .\vcpkg install boost%conf%
@@ -12,5 +12,4 @@ set conf=:x64-windows -Y
 .\vcpkg install qt5%conf%
 .\vcpkg install glog%conf%
 .\vcpkg install gflags%conf%
-.\vcpkg install qt%conf%
 .\vcpkg install gdal%conf%
