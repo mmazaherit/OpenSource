@@ -18,19 +18,19 @@
     #include <dirent.h>
 #endif
 // trim from left
-inline std::string &ltrim(std::string &s, const char* t = " \t\n\r\f\v")
+static inline std::string &ltrim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     s.erase(0, s.find_first_not_of(t));
     return s;
 }
 // trim from right
-inline std::string &rtrim(std::string &s, const char* t = " \t\n\r\f\v")
+static inline std::string &rtrim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     s.erase(s.find_last_not_of(t) + 1);
     return s;
 }
 // trim from left & right
-inline std::string &trim(std::string &s, const char* t = " \t\n\r\f\v")
+static inline std::string &trim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     return ltrim(rtrim(s, t), t);
 }
@@ -44,7 +44,7 @@ static inline std::string to_string_with_precision(const T a_value, const int n 
     return out.str();
 }
 
-inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
+static inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
 {
     std::vector<std::vector<std::string> > data;
     std::ifstream infile(file);
@@ -81,34 +81,44 @@ inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char*
     
     return data;
 }
-inline std::string GetFileName(const std::string &FilePath)
+static inline std::string GetFileName(const std::string &FilePath)
 {
     size_t found;
     found = FilePath.find_last_of("/\\");
     return FilePath.substr(found + 1);
 }
-inline std::string GetFileNameWithoutExtention(const std::string &FilePath)
+
+static inline std::string GetFileNameWithoutExtention(const std::string &FilePath)
 {
     std::string filename = GetFileName(FilePath);
     size_t found;
     found = filename.find_last_of(".");
     return filename.substr(0,found);
 }
-inline std::string GetFileNameExtention(const std::string &FilePath)
+static inline std::string GetFileNameExtention(const std::string &FilePath)
 {
     std::string filename = GetFileName(FilePath);
     size_t found;
     found = filename.find_last_of(".");
     return filename.substr(found+1,filename.size());
 }
-inline std::string GetFileFolderName(const std::string &FilePath)
+static inline std::string GetFileFolderName(const std::string &FilePath)
 {
     size_t found;
     found = FilePath.find_last_of("/\\");
     
     return FilePath.substr(0,found);
 }
-inline std::string GetMyDocsDirA()
+//returns the full tile path, but just drop the extension
+static inline std::string GetFilePathWithoutExtention(const std::string &FilePath)
+{
+
+  size_t found;
+  found = FilePath.find_last_of(".");
+  return FilePath.substr(0, found);
+}
+
+static inline std::string GetMyDocsDirA()
 {
     std::string my_docs_dir;
     
@@ -125,16 +135,21 @@ inline std::string GetMyDocsDirA()
     #endif
     return my_docs_dir;
 };
-inline std::string GetExePathA()
+static inline std::string GetExePathA()
 {
-    #ifdef WIN32
-    char szPath[_MAX_PATH + 1];
-    GetModuleFileNameA(0, szPath, _MAX_PATH + 1);
-    
-    return std::string(szPath);
-    #else
-    return "";
-    #endif
+  #ifdef WIN32
+  char szPath[_MAX_PATH + 1];
+  GetModuleFileNameA(0, szPath, _MAX_PATH + 1);
+  
+  return std::string(szPath);
+  #else
+  char arg1[20];
+  char exepath[PATH_MAX + 1] = { 0 };
+  
+  sprintf(arg1, "/proc/%d/exe", getpid());
+  readlink(arg1, exepath, 1024);
+  return std::string(exepath);;
+  #endif
 }
 inline std::string ReadWholeFile(const std::string& FilePath)
 {
@@ -150,7 +165,7 @@ inline std::string ReadWholeFile(const std::string& FilePath)
     return Buffer;
     
 }
-inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory, const std::string filter="*")
+static inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory, const std::string filter="*")
 {
     std::vector<std::string> out;
     #ifdef WIN32
@@ -345,7 +360,6 @@ static inline double ComputeMean(int n, const T* const Values)
 
 
 //http://stackoverflow.com/questions/8942950/how-do-i-find-the-orthogonal-projection-of-a-point-onto-a-plane
-
 template<typename T>
 static inline void PointToPlaneProjection(const T* const Plane4Coef, const T* const point, T Projection[3])
 {
@@ -382,5 +396,46 @@ static inline void PointToPlaneProjection(const T* const Plane4Coef, const T* co
     Projection[2] = point[2] - dotProduct*Plane4Coef[2] / norm;
     
 }
+//https://math.stackexchange.com/questions/1300484/distance-between-line-and-a-point
+template<typename T>
+static inline void PointToLineProjection(const T *const LineDirection, const T *const PointOnline, const T *const pointOffline, T PointToLineVector[3])
+{
+  T dotvec = DotProduct31(LineDirection, LineDirection);
+  
+  
+  Subtract31(pointOffline, PointOnline, PointToLineVector);
+  T dot = DotProduct31(PointToLineVector, LineDirection);
+  
+  PointToLineVector[0] -=  dot / dotvec*PointToLineVector[0];
+  PointToLineVector[1] -=  dot / dotvec*PointToLineVector[1];
+  PointToLineVector[2] -=  dot / dotvec*PointToLineVector[2];
+  
+}
 
+//https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+template<typename T>
+static inline bool LineToPlaneIntersection(const T *const LineDirection, const T *const PointOnline, const T *const Plane4Coeef, T IntersectionPoint[3])
+{
+
+  T dotln = DotProduct31(LineDirection, Plane4Coeef);
+  if (dotln == T(0.0))
+    return false;
+    
+  T origin[3] = { 0.0 };
+  T P0[3]; //a point on a plane, comes from projection of the origin into plane
+  PointToPlaneProjection(Plane4Coeef, origin, P0);
+  
+  T vec[3];
+  Subtract31(P0, PointOnline, vec);
+  T dot= DotProduct31(vec, Plane4Coeef);
+  
+  T d = dot / dotln;
+  
+  IntersectionPoint[0] = d*LineDirection[0] + PointOnline[0];
+  IntersectionPoint[1] = d*LineDirection[1] + PointOnline[1];
+  IntersectionPoint[2] = d*LineDirection[2] + PointOnline[2];
+  
+  return true;
+  
+}
 #endif // StreamUtils_h__
