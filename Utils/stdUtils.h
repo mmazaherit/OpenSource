@@ -43,7 +43,16 @@ static inline std::string to_string_with_precision(const T a_value, const int n 
     out << std::setprecision(n) << a_value;
     return out.str();
 }
-
+template <typename T>
+static inline std::string STR(const T value)
+{
+	return std::to_string(value);
+}
+template <typename T>
+static inline std::string STR(const T value, const int n)
+{
+	return to_string_with_precision(value);
+}
 static inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
 {
     std::vector<std::vector<std::string> > data;
