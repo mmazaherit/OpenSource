@@ -374,15 +374,20 @@ static inline double ComputeMean(int n, const T* const Values)
     return Sum / n;
 }
 template<typename T>
-static inline T Scale31(T scale, T * values)
+static inline void Scale31(T scale, T * values)
 {
-	values[0] *= scale; values[1] *= scale; values[2] *= scale;
+	values[0] *= scale;
+	values[1] *= scale;
+	values[2] *= scale;
 }
 
 template<typename T>
-static inline T Scale41(T scale, T * values)
+static inline void Scale41(T scale, T * values)
 {
-	values[0] *= scale; values[1] *= scale; values[2] *= scale; values[3] *= scale
+	values[0] *= scale;
+	values[1] *= scale;
+	values[2] *= scale;
+	values[3] *= scale;
 }
 template<typename T>
 static inline T Norm31(const T * const values)
