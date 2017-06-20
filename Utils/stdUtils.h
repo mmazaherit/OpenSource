@@ -53,6 +53,13 @@ static inline std::string STR(const T value, const int n)
 {
 	return to_string_with_precision(value);
 }
+template <typename T>
+static inline std::string STR31(const T * pvalue, const int precision = 6, const char* delimiter = " ")
+{
+	std::ostringstream out;
+	out << std::setprecision(precision) << pvalue[0] << delimiter << pvalue[1] << delimiter << pvalue[2];
+	return out.str();
+}
 static inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
 {
     std::vector<std::vector<std::string> > data;
@@ -366,7 +373,46 @@ static inline double ComputeMean(int n, const T* const Values)
         
     return Sum / n;
 }
+template<typename T>
+static inline T Scale31(T scale, T * values)
+{
+	values[0] *= scale; values[1] *= scale; values[2] *= scale;
+}
 
+template<typename T>
+static inline T Scale41(T scale, T * values)
+{
+	values[0] *= scale; values[1] *= scale; values[2] *= scale; values[3] *= scale
+}
+template<typename T>
+static inline T Norm31(const T * const values)
+{
+	return sqrt(values[0] *values[0] + values[1] * values[1] + values[2] * values[2]);
+}
+template<typename T>
+static inline T Norm41(const T * const values)
+{
+	return sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2]+ values[3] * values[3]);
+}
+
+//A=A+alpha*B
+template<typename T>
+static inline T Sum31(T * A, const T* B, T alpha=T(1.0))
+{
+	A[0] += alpha*B[0];
+	A[1] += alpha*B[1];
+	A[2] += alpha*B[2];
+
+}
+//A=A+alpha*B
+template<typename T>
+static inline T Sum41(T * A, const T* B, T alpha = T(1.0))
+{
+	A[0] += alpha*B[0];
+	A[1] += alpha*B[1];
+	A[2] += alpha*B[2];
+	A[3] += alpha*B[3];
+}
 
 //http://stackoverflow.com/questions/8942950/how-do-i-find-the-orthogonal-projection-of-a-point-onto-a-plane
 template<typename T>
