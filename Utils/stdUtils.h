@@ -400,23 +400,24 @@ static inline T Norm41(const T * const values)
 	return sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2]+ values[3] * values[3]);
 }
 
-//A=A+alpha*B
+//Result=A+alpha*B
 template<typename T>
-static inline T Sum31(T * A, const T* B, T alpha=T(1.0))
+static inline void Sum31(const T * A, const T* B, T* Result, T alpha=T(1.0))
 {
-	A[0] += alpha*B[0];
-	A[1] += alpha*B[1];
-	A[2] += alpha*B[2];
+	Result[0] =A[0]+ alpha*B[0];
+	Result[1] =A[1]+ alpha*B[1];
+	Result[2] =A[2]+ alpha*B[2];
 
 }
-//A=A+alpha*B
+//Result=A+alpha*B
 template<typename T>
-static inline T Sum41(T * A, const T* B, T alpha = T(1.0))
+static inline void Sum41(const T * A, const T* B,T* Result, T alpha = T(1.0))
 {
-	A[0] += alpha*B[0];
-	A[1] += alpha*B[1];
-	A[2] += alpha*B[2];
-	A[3] += alpha*B[3];
+	Result[0] = A[0] + alpha*B[0];
+	Result[1] = A[1] + alpha*B[1];
+	Result[2] = A[2] + alpha*B[2];
+	Result[3] = A[3] + alpha*B[3];
+
 }
 
 //http://stackoverflow.com/questions/8942950/how-do-i-find-the-orthogonal-projection-of-a-point-onto-a-plane

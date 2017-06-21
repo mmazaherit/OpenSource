@@ -138,7 +138,7 @@ namespace ceres
 		RotatedPoint[2] = R[6] * Pt[0] + R[7] * Pt[1] + R[8] * Pt[2];
 	}
 
-https://www.mathworks.com/help/aeroblks/quaternionmultiplication.html
+//https://www.mathworks.com/help/aeroblks/quaternionmultiplication.html
 	template <typename T>
 	static inline void quatmul(const T* const q, const T* const r, T* qr)
 	{
