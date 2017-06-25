@@ -10,6 +10,12 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+
+static const double DEG2RAD = 0.0174532925199433;
+static const double RAD2DEG = 57.2957795130823;
+static const double PI = 3.14159265358979;
+
+
 #ifdef WIN32
     #include <windows.h>
     #include <shlobj.h>
@@ -57,7 +63,8 @@ template <typename T>
 static inline std::string STR31(const T * pvalue, const int precision = 6, const char* delimiter = " ")
 {
 	std::ostringstream out;
-	out << std::setprecision(precision) << pvalue[0] << delimiter << pvalue[1] << delimiter << pvalue[2];
+	out.precision(precision);
+	out << pvalue[0] << delimiter << pvalue[1] << delimiter << pvalue[2];
 	return out.str();
 }
 static inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
@@ -322,7 +329,7 @@ static inline T DotProduct31(const T* const A, const T* const B)
     return A[0] * B[0] + A[1] * B[1] + A[2] * B[2];
 }
 template<typename T>
-static inline void Subtract31(const T* const A, const T* const B, T* AminusB)
+static inline void Subtract31(T* AminusB,const T* const A, const T* const B)
 {
     AminusB[0] = A[0] - B[0];
     AminusB[1] = A[1] - B[1];
@@ -333,8 +340,24 @@ template<typename T>
 static inline T Distance31(const T* const vec1, const T* const vec2)
 {
     T res[3];
-    Subtract31(vec1, vec2, res);
+    Subtract31(res,vec1, vec2);
     return sqrt(DotProduct31(res, res));
+}
+
+template<typename T>
+static inline void product441(T* result, const T* const mat44, const T* const mat41)
+{
+	result[0] = mat44[0]  * mat41[0] + mat44[1]  * mat41[1] + mat44[2]  * mat41[2] + mat44[3]  * mat41[3];
+	result[1] = mat44[4]  * mat41[0] + mat44[5]  * mat41[1] + mat44[6]  * mat41[2] + mat44[7]  * mat41[3];
+	result[2] = mat44[8]  * mat41[0] + mat44[9]  * mat41[1] + mat44[10] * mat41[2] + mat44[11] * mat41[3];
+	result[3] = mat44[12] * mat41[0] + mat44[13] * mat41[1] + mat44[14] * mat41[2] + mat44[15] * mat41[3];
+}
+template<typename T>
+static inline void product331(T* result, const T* const mat33, const T* const mat31)
+{
+	result[0] = mat33[0] * mat31[0] + mat33[1] * mat31[1] + mat33[2] * mat31[2]  ;
+	result[1] = mat33[3] * mat31[0] + mat33[4] * mat31[1] + mat33[5] * mat31[2]  ;
+	result[2] = mat33[6] * mat31[0] + mat33[7] * mat31[1] + mat33[8] * mat31[2] ;
 }
 
 
@@ -400,9 +423,43 @@ static inline T Norm41(const T * const values)
 	return sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2]+ values[3] * values[3]);
 }
 
+//A=B
+template<typename T>
+static inline void Copy31(T * A, const T* B)
+{
+	A[0] = B[0];
+	A[1] = B[1];
+	A[2] = B[2];
+}
+template<typename T>
+static inline void Copy41(T * A, const T* B)
+{
+	A[0] = B[0];
+	A[1] = B[1];
+	A[2] = B[2];
+	A[3] = B[3];
+}
+
+//A=A+alpha*B
+template<typename T>
+static inline void Sum31(T * A, const T* B, T alpha = T(1.0))
+{
+	A[0] += alpha*B[0];
+	A[1] += alpha*B[1];
+	A[2] += alpha*B[2];
+}
+//A=A+alpha*B
+template<typename T>
+static inline void Sum41(T * A, const T* B, T alpha = T(1.0))
+{
+	A[0] += alpha*B[0];
+	A[1] += alpha*B[1];
+	A[2] += alpha*B[2];
+	A[3] += alpha*B[3];
+}
 //Result=A+alpha*B
 template<typename T>
-static inline void Sum31(const T * A, const T* B, T* Result, T alpha=T(1.0))
+static inline void Sum31(T* Result,  const T * A, const T* B,  T alpha=T(1.0))
 {
 	Result[0] =A[0]+ alpha*B[0];
 	Result[1] =A[1]+ alpha*B[1];
@@ -411,13 +468,33 @@ static inline void Sum31(const T * A, const T* B, T* Result, T alpha=T(1.0))
 }
 //Result=A+alpha*B
 template<typename T>
-static inline void Sum41(const T * A, const T* B,T* Result, T alpha = T(1.0))
+static inline void Sum41(T* Result, const T * A, const T* B, T alpha = T(1.0))
 {
 	Result[0] = A[0] + alpha*B[0];
 	Result[1] = A[1] + alpha*B[1];
 	Result[2] = A[2] + alpha*B[2];
 	Result[3] = A[3] + alpha*B[3];
 
+}
+template<typename T> static inline void setzero3(T * val) { val[0] = val[1] = val[2] = T(0.0); }
+template<typename T> static inline void setzero4(T * val) { val[0] = val[1] = val[2] = val[3]= T(0.0); }
+
+/*skew symmetric matrix*/
+template<typename T>
+static inline void skew(T * skewt, const T * t)
+{
+	skewt[0] = T(0.0);	skewt[1] = -t[2];	skewt[2] = t[1];
+	skewt[3] = t[2]; 	skewt[4] = T(0.0); 		skewt[5] = -t[0];
+	skewt[6] = -t[1]; 	skewt[7] = t[0]; 	    skewt[8] = T(0.0);
+}
+/*skew symmetric matrix squared*/
+template<typename T>
+static inline void skew2(T * sewsqt, const T * t)
+{
+
+	sewsqt[0] = -(t[2] * t[2] + t[1] * t[1]);		sewsqt[1] = t[1] * t[0];	sewsqt[2] = t[0] * t[2];
+	sewsqt[3] = sewsqt[1]; 	sewsqt[4] = -(t[2] * t[2] + t[0] * t[0]); 		sewsqt[5] = t[2] * t[1];
+	sewsqt[6] = sewsqt[2]; 	sewsqt[7] = sewsqt[5]; 	sewsqt[8] = -(t[1] * t[1] + t[0] * t[0]);
 }
 
 //http://stackoverflow.com/questions/8942950/how-do-i-find-the-orthogonal-projection-of-a-point-onto-a-plane
@@ -464,7 +541,7 @@ static inline void PointToLineProjection(const T *const LineDirection, const T *
   T dotvec = DotProduct31(LineDirection, LineDirection);
   
   
-  Subtract31(pointOffline, PointOnline, PointToLineVector);
+  Subtract31(PointToLineVector,pointOffline, PointOnline);
   T dot = DotProduct31(PointToLineVector, LineDirection);
   
   PointToLineVector[0] -=  dot / dotvec*PointToLineVector[0];
@@ -487,7 +564,7 @@ static inline bool LineToPlaneIntersection(const T *const LineDirection, const T
   PointToPlaneProjection(Plane4Coeef, origin, P0);
   
   T vec[3];
-  Subtract31(P0, PointOnline, vec);
+  Subtract31(vec,P0, PointOnline);
   T dot= DotProduct31(vec, Plane4Coeef);
   
   T d = dot / dotln;
