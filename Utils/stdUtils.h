@@ -403,6 +403,13 @@ static inline void Scale31(T scale, T * values)
 	values[1] *= scale;
 	values[2] *= scale;
 }
+template<typename T>
+static inline void Scale31(T* result, T scale, const  T * values)
+{
+	result[0]=values[0] * scale;
+	result[1]=values[1] * scale;
+	result[2]=values[2] * scale;
+}
 
 template<typename T>
 static inline void Scale41(T scale, T * values)
@@ -412,6 +419,20 @@ static inline void Scale41(T scale, T * values)
 	values[2] *= scale;
 	values[3] *= scale;
 }
+template<typename T>
+static inline void Scale9(T scale, T * values)
+{
+	values[0] *= scale;	values[1] *= scale;	values[2] *= scale;
+	values[3] *= scale;	values[4] *= scale;	values[5] *= scale;
+	values[6] *= scale;	values[7] *= scale;	values[8] *= scale;
+}
+template<typename T, int n>
+static inline void Scale(T scale, T * values)
+{	
+	for (int i = 0; i < n; ++i)
+		values[i] *= scale;
+}
+
 template<typename T>
 static inline T Norm31(const T * const values)
 {
@@ -425,19 +446,19 @@ static inline T Norm41(const T * const values)
 
 //A=B
 template<typename T>
-static inline void Copy31(T * A, const T* B)
+static inline void Copy31(T * dst, const T* src)
 {
-	A[0] = B[0];
-	A[1] = B[1];
-	A[2] = B[2];
+	dst[0] = src[0];
+	dst[1] = src[1];
+	dst[2] = src[2];
 }
 template<typename T>
-static inline void Copy41(T * A, const T* B)
+static inline void Copy41(T * dst, const T* src)
 {
-	A[0] = B[0];
-	A[1] = B[1];
-	A[2] = B[2];
-	A[3] = B[3];
+	dst[0] = src[0];
+	dst[1] = src[1];
+	dst[2] = src[2];
+	dst[3] = src[3];
 }
 
 //A=A+alpha*B

@@ -114,6 +114,58 @@ namespace ceres
 	}
 
 	template <typename T>
+	static inline void RotationRzRxRyToRPY(const int row_stride_parameter, const T* R, T*euler) {
+		CHECK_EQ(row_stride_parameter, 3);
+		EulerAnglesToMzMyMx(RowMajorAdapter3x3(M), euler);
+	}
+	template <typename T, int row_stride, int col_stride>
+	static inline void	RotationRzRxRyToRPY(const MatrixAdapter<T, row_stride, col_stride>& R, T* RPY)
+	{
+		const double kPi = 3.14159265358979323846;
+		const T radians2degreee(180.0 / kPi);
+
+		RPY[0] = atan(-R(2, 0) / R(2, 2))*radians2degreee;
+		RPY[1] = asin( R(2, 1))*radians2degreee;
+		RPY[2] = atan(-R(0, 1) / R(1, 1))*radians2degreee;
+	}
+	template <typename T>
+	static inline void RPYToRzRxRy(const T* RPY,
+		const int row_stride_parameter,
+		T* R) {
+		CHECK_EQ(row_stride_parameter, 3);
+		RPYToRzRxRy(RPY, RowMajorAdapter3x3(R));
+	}
+
+	template <typename T, int row_stride, int col_stride>
+	static void RPYToRzRxRy(const T* RPY,const MatrixAdapter<T, row_stride, col_stride>& R) 
+	{
+		const double kPi = 3.14159265358979323846;
+		const T degrees_to_radians(kPi / 180.0);
+
+		const T Roll(euler[0] * degrees_to_radians);
+		const T Pitch(euler[1] * degrees_to_radians);
+		const T Yaw(euler[2] * degrees_to_radians);
+
+		const T cosyaw = cos(Yaw);
+		const T sinyaw = sin(Yaw);
+		const T cospitch = cos(Pitch);
+		const T sinpitch = sin(Pitch);
+		const T cosroll = cos(Roll);
+		const T sinroll = sin(Roll);
+
+		R(0, 0) = cosroll*cosyaw - sinpitch*sinroll*sinyaw;
+		R(0, 1) = -cospitch*sinyaw;
+		R(0, 2) = cosyaw*sinroll + cosroll*sinpitch*sinyaw;
+
+		R(1, 0) = cosroll*sinyaw + cosyaw*sinpitch*sinroll;
+		R(1, 1) = cospitch*cosyaw;
+		R(1, 2) = sinroll*sinyaw - cosroll*cosyaw*sinpitch;
+
+		R(2, 0) = -cospitch*sinroll;
+		R(2, 1) = sinpitch;
+		R(2, 2) = cospitch*cosroll;
+	}
+	template <typename T>
 	static inline void TransposeRotation(const T* const R, T* Rt)
 	{
 		Rt[0] = R[0];
