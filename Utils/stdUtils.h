@@ -335,6 +335,12 @@ static inline void Subtract31(T* AminusB,const T* const A, const T* const B)
     AminusB[1] = A[1] - B[1];
     AminusB[2] = A[2] - B[2];
 }
+template<typename T, int n>
+static inline void Subtractn(T* AminusB, const T* const A, const T* const B)
+{
+	for(int i=0;i<n;++i)
+	AminusB[i] = A[i] - B[i];	
+}
 
 template<typename T>
 static inline T Distance31(const T* const vec1, const T* const vec2)

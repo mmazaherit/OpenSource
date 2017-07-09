@@ -30,16 +30,16 @@ namespace ceres
 		const double kPi = 3.14159265358979323846;
 		const T degrees_to_radians(kPi / 180.0);
 
-		const T pitch(euler[0] * degrees_to_radians);
-		const T roll(euler[1] * degrees_to_radians);
-		const T yaw(euler[2] * degrees_to_radians);
+		const T omega(euler[0] * degrees_to_radians);
+		const T phi(euler[1] * degrees_to_radians);
+		const T kapa(euler[2] * degrees_to_radians);
 
-		const T c1 = cos(yaw);
-		const T s1 = sin(yaw);
-		const T c2 = cos(roll);
-		const T s2 = sin(roll);
-		const T c3 = cos(pitch);
-		const T s3 = sin(pitch);
+		const T c1 = cos(kapa);
+		const T s1 = sin(kapa);
+		const T c2 = cos(phi);
+		const T s2 = sin(phi);
+		const T c3 = cos(omega);
+		const T s3 = sin(omega);
 
 		R(0, 0) = c1*c2;
 		R(0, 1) = -s1*c3 + c1*s2*s3;
@@ -54,20 +54,21 @@ namespace ceres
 		R(2, 2) = c2*c3;
 	}
 
-	// photogrammetric convention Mz*My*Mx  where M=R'
+
+	// photogrammetric convention M=Mz*My*Mx  where M=R'
 	template <typename T>
 	static inline void EulerAnglesToMzMyMx(const T* euler,
 		const int row_stride_parameter,
-		T* R) {
+		T* MzMyMx) {
 		CHECK_EQ(row_stride_parameter, 3);
-		EulerAnglesToMzMyMx(euler, RowMajorAdapter3x3(R));
+		EulerAnglesToMzMyMx(euler, RowMajorAdapter3x3(MzMyMx));
 	}
 
 
 	template <typename T, int row_stride, int col_stride>
 	static void EulerAnglesToMzMyMx(
 		const T* euler,
-		const MatrixAdapter<T, row_stride, col_stride>& M) {
+		const MatrixAdapter<T, row_stride, col_stride>& MzMyMx) {
 		const double kPi = 3.14159265358979323846;
 		const T degrees_to_radians(kPi / 180.0);
 
@@ -82,51 +83,84 @@ namespace ceres
 		const T cosomega = cos(omega);
 		const T sinomega = sin(omega);
 
-		M(0, 0) = coskappa*cosphi;
-		M(0, 1) = sinkappa*cosomega + coskappa*sinphi*sinomega;
-		M(0, 2) = sinkappa*sinomega - coskappa*sinphi*cosomega;
+		MzMyMx(0, 0) = coskappa*cosphi;
+		MzMyMx(0, 1) = sinkappa*cosomega + coskappa*sinphi*sinomega;
+		MzMyMx(0, 2) = sinkappa*sinomega - coskappa*sinphi*cosomega;
 
-		M(1, 0) = -sinkappa*cosphi;
-		M(1, 1) = coskappa*cosomega - sinkappa*sinphi*sinomega;
-		M(1, 2) = coskappa*sinomega + sinkappa*sinphi*cosomega;
+		MzMyMx(1, 0) = -sinkappa*cosphi;
+		MzMyMx(1, 1) = coskappa*cosomega - sinkappa*sinphi*sinomega;
+		MzMyMx(1, 2) = coskappa*sinomega + sinkappa*sinphi*cosomega;
 
-		M(2, 0) = sinphi;
-		M(2, 1) = -cosphi*sinomega;
-		M(2, 2) = cosphi*cosomega;
+		MzMyMx(2, 0) = sinphi;
+		MzMyMx(2, 1) = -cosphi*sinomega;
+		MzMyMx(2, 2) = cosphi*cosomega;
 	}
 
-
+	//two sets of eulr angles corresponds to the same rotation matrix
 	template <typename T>
-	static inline void RotationMzMyMxToEuler(const int row_stride_parameter, const T* M, T*euler) {
+	static inline bool RotationRzRyRxToEuler(const int row_stride_parameter, const T* RzRyRx, T*euler1, T*euler2) {
 		CHECK_EQ(row_stride_parameter, 3);
-		EulerAnglesToMzMyMx(RowMajorAdapter3x3(M), euler);
+		return RotationRzRyRxToEuler(RowMajorAdapter3x3(RzRyRx), euler1,euler2);
 	}
 
 	template <typename T, int row_stride, int col_stride>
-	static inline void	RotationMzMyMxToEuler(const MatrixAdapter<T, row_stride, col_stride>& M, T* euler)
+	static inline bool RotationRzRyRxToEuler(const MatrixAdapter<T, row_stride, col_stride>& RzRyRx, T* euler1, T* euler2)
+	{
+		//http://www.staff.city.ac.uk/~sbbh653/publications/euler.pdf
+		const double kPi = 3.14159265358979323846;
+		const T radians2degreee(180.0 / kPi);		
+		
+		if (RzRyRx(2, 0) != T(1.0) && RzRyRx(2, 0) != T(-1.0))
+		{
+			//no ambigiuty
+
+			euler1[1] = -asin(RzRyRx(2, 0))*radians2degreee;
+			euler2[1] = T(180.0) - euler1[1];
+
+			T cosPhi1 = cos(euler1[1] / radians2degreee);
+			T cosPhi2 = cos(euler2[1] / radians2degreee);
+
+			euler1[0] = atan2(RzRyRx(2, 1) / cosPhi1, RzRyRx(2, 2) / cosPhi1)*radians2degreee;
+			euler2[0] = atan2(RzRyRx(2, 1) / cosPhi2, RzRyRx(2, 2) / cosPhi2)*radians2degreee;
+										
+			euler1[2] = atan2(RzRyRx(1, 0) / cosPhi1, RzRyRx(0, 0) / cosPhi1)*radians2degreee;
+			euler2[2] = atan2(RzRyRx(1, 0) / cosPhi2, RzRyRx(0, 0) / cosPhi2)*radians2degreee;
+			return true;
+		}
+		else 
+			if (RzRyRx(2, 0) == T(-1.0))
+			{
+			euler1[2]= euler2[2] = T(0.0);// can be anything
+			euler1[1]= euler2[1] = T(90.0);
+			euler1[0]= euler2[0] = euler1[2] +atan2(RzRyRx(0,1),  RzRyRx(0,2))*radians2degreee;
+			return false;
+			}
+		else
+			if(RzRyRx(2, 0) == T(1.0))
+		{
+			euler1[2] = euler2[2] = T(0.0);// can be anything
+			euler1[1] = euler2[1] = T(-90.0);
+			euler1[0] = euler2[0] = -euler1[2] + atan2(-RzRyRx(0, 1), -RzRyRx(0, 2))*radians2degreee;
+			return false;
+		}
+	}
+
+
+
+	template <typename T>
+	static inline void RotationRzRxRyToRPY(const int row_stride_parameter, const T* RzRxRy, T*euler) {
+		CHECK_EQ(row_stride_parameter, 3);
+		RotationRzRxRyToRPY(RowMajorAdapter3x3(RzRxRy), euler);
+	}
+	template <typename T, int row_stride, int col_stride>
+	static inline void	RotationRzRxRyToRPY(const MatrixAdapter<T, row_stride, col_stride>& RzRxRy, T* RPY)
 	{
 		const double kPi = 3.14159265358979323846;
 		const T radians2degreee(180.0 / kPi);
 
-		euler[0] = atan(-M(2, 1) / M(2, 2))*radians2degreee;
-		euler[1] = asin(M(2, 0))*radians2degreee;
-		euler[2] = atan(-M(1, 0) / M(0, 0))*radians2degreee;
-	}
-
-	template <typename T>
-	static inline void RotationRzRxRyToRPY(const int row_stride_parameter, const T* R, T*euler) {
-		CHECK_EQ(row_stride_parameter, 3);
-		EulerAnglesToMzMyMx(RowMajorAdapter3x3(M), euler);
-	}
-	template <typename T, int row_stride, int col_stride>
-	static inline void	RotationRzRxRyToRPY(const MatrixAdapter<T, row_stride, col_stride>& R, T* RPY)
-	{
-		const double kPi = 3.14159265358979323846;
-		const T radians2degreee(180.0 / kPi);
-
-		RPY[0] = atan(-R(2, 0) / R(2, 2))*radians2degreee;
-		RPY[1] = asin( R(2, 1))*radians2degreee;
-		RPY[2] = atan(-R(0, 1) / R(1, 1))*radians2degreee;
+		RPY[0] = atan2(-RzRxRy(2, 0),  RzRxRy(2, 2))*radians2degreee;
+		RPY[1] = asin( RzRxRy(2, 1))*radians2degreee;
+		RPY[2] = atan2(-RzRxRy(0, 1), RzRxRy(1, 1))*radians2degreee;
 	}
 	template <typename T>
 	static inline void RPYToRzRxRy(const T* RPY,
@@ -137,14 +171,14 @@ namespace ceres
 	}
 
 	template <typename T, int row_stride, int col_stride>
-	static void RPYToRzRxRy(const T* RPY,const MatrixAdapter<T, row_stride, col_stride>& R) 
+	static void RPYToRzRxRy(const T* RPY,const MatrixAdapter<T, row_stride, col_stride>& RzRxRy) 
 	{
 		const double kPi = 3.14159265358979323846;
 		const T degrees_to_radians(kPi / 180.0);
 
-		const T Roll(euler[0] * degrees_to_radians);
-		const T Pitch(euler[1] * degrees_to_radians);
-		const T Yaw(euler[2] * degrees_to_radians);
+		const T Roll(RPY[0] * degrees_to_radians);
+		const T Pitch(RPY[1] * degrees_to_radians);
+		const T Yaw(RPY[2] * degrees_to_radians);
 
 		const T cosyaw = cos(Yaw);
 		const T sinyaw = sin(Yaw);
@@ -153,17 +187,17 @@ namespace ceres
 		const T cosroll = cos(Roll);
 		const T sinroll = sin(Roll);
 
-		R(0, 0) = cosroll*cosyaw - sinpitch*sinroll*sinyaw;
-		R(0, 1) = -cospitch*sinyaw;
-		R(0, 2) = cosyaw*sinroll + cosroll*sinpitch*sinyaw;
+		RzRxRy(0, 0) = cosroll*cosyaw - sinpitch*sinroll*sinyaw;
+		RzRxRy(0, 1) = -cospitch*sinyaw;
+		RzRxRy(0, 2) = cosyaw*sinroll + cosroll*sinpitch*sinyaw;
 
-		R(1, 0) = cosroll*sinyaw + cosyaw*sinpitch*sinroll;
-		R(1, 1) = cospitch*cosyaw;
-		R(1, 2) = sinroll*sinyaw - cosroll*cosyaw*sinpitch;
+		RzRxRy(1, 0) = cosroll*sinyaw + cosyaw*sinpitch*sinroll;
+		RzRxRy(1, 1) = cospitch*cosyaw;
+		RzRxRy(1, 2) = sinroll*sinyaw - cosroll*cosyaw*sinpitch;
 
-		R(2, 0) = -cospitch*sinroll;
-		R(2, 1) = sinpitch;
-		R(2, 2) = cospitch*cosroll;
+		RzRxRy(2, 0) = -cospitch*sinroll;
+		RzRxRy(2, 1) = sinpitch;
+		RzRxRy(2, 2) = cospitch*cosroll;
 	}
 	template <typename T>
 	static inline void TransposeRotation(const T* const R, T* Rt)
@@ -192,11 +226,39 @@ namespace ceres
 
 //https://www.mathworks.com/help/aeroblks/quaternionmultiplication.html
 	template <typename T>
-	static inline void quatmul(const T* const q, const T* const r, T* qr)
+	static inline void RotationQuaternionProduct(const T* const q, const T* const r, T* qr)
 	{
 		qr[0] = r[0] * q[0] - r[1] * q[1] - r[2] * q[2] - r[3] * q[3];
 		qr[1] = r[0] * q[1] + r[1] * q[0] - r[2] * q[3] + r[3] * q[2];
 		qr[2] = r[0] * q[2] + r[1] * q[3] + r[2] * q[0] - r[3] * q[1];
-		qr[3] = r[0] * q[3] - r[1] * q[2] + r[2] * q[1] + r[3] * q[0];		
+		qr[3] = r[0] * q[3] - r[1] * q[2] + r[2] * q[1] + r[3] * q[0];
+
+		T nrmqr = Norm41(qr);
+		Scale41(T(1.0) / nrmqr, qr);
 	}
+
+	
+	
+}
+
+void TestEulerAnglesToRzRyRx()
+{
+	double eulerinput1[3]{ 10,20,30 };
+	double Rinput1[9];
+	ceres::EulerAnglesToRotationMatrix(eulerinput1, ceres::RowMajorAdapter3x3(Rinput1));
+
+	double eulers1[3], eulers2[3], testR1[9], testR2[9];
+
+	ceres::RotationRzRyRxToEuler(ceres::RowMajorAdapter3x3(Rinput1), eulers1, eulers2);
+	ceres::EulerAnglesToRzRyRx(eulers1, ceres::RowMajorAdapter3x3(testR1));
+	ceres::EulerAnglesToRzRyRx(eulers2, ceres::RowMajorAdapter3x3(testR2));
+
+	Subtractn<double, 9>(testR1, testR1, testR2);
+
+	double eulerinputambig[3]{ -10,90,0 };
+	double Rinputamb[9];
+	ceres::EulerAnglesToRzRyRx(eulerinputambig, ceres::RowMajorAdapter3x3(Rinputamb));
+	ceres::RotationRzRyRxToEuler(ceres::RowMajorAdapter3x3(Rinputamb), eulers1, eulers2);
+
+	ceres::EulerAnglesToRzRyRx(eulers1, ceres::RowMajorAdapter3x3(testR1));
 }
