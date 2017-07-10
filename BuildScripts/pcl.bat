@@ -12,9 +12,9 @@ set pcl=%pclroot%/pcl
 
 set vtk=D:/ThirdParty/VTK/%buildfolder%
 
-::"pcl-1.8.0" had issue with vtk7.1, so master branch is used for now
+::"pcl-1.8.0" had issue with vtk7.1, so pcl-1.8.1rc1 branch is used for now
 chdir %pclroot%
-git clone --branch master https://github.com/PointCloudLibrary/pcl.git
+git clone --branch pcl-1.8.1rc1 https://github.com/PointCloudLibrary/pcl.git
 
 cd pcl
 mkdir ThirdParty
