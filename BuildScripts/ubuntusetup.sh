@@ -7,15 +7,9 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C
 sudo add-apt-repository ppa:xorg-edgers/ppa -y
 sudo apt-get update
 
-sudo apt-get install g++ -y
-
-#install qt, cmake gui needs it
-wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run -P ~/Downloads
-chmod +x ~/Downloads/qt-unified-linux-x64-online.run
-~/Downloads/qt-unified-linux-x64-online.run
-
 #install cmake-gui from source, needs qt
-sudo apt-get purge cmake -y
+#sudo apt-get purge cmake -y
+sudo apt-get install g++ -y
 sudo apt-get install qt4-default -y
 wget https://cmake.org/files/v3.9/cmake-3.9.0.tar.gz -P ~/Downloads
 cd ~/Downloads
@@ -25,6 +19,10 @@ cd ~/Downloads/cmake-3.9.0
 make -j4
 sudo make install
 
+#install qt, cmake gui needs it
+wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run -P ~/Downloads
+chmod +x ~/Downloads/qt-unified-linux-x64-online.run
+~/Downloads/qt-unified-linux-x64-online.run
 
 
 #install eigen from source
@@ -46,12 +44,12 @@ sudo apt-get install rabbitvcs-nautilus3 rabbitvcs-nautilus rabbitvcs-thunar rab
 chown -R $USER:$USER ~/.config/rabbitvcs
 
 #install ROS indigo
-sudo apt-get install ros-indigo-desktop-full python-rosinstall -y
+sudo apt-get install ros-indigo-desktop-full -y
 echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
 source /opt/ros/indigo/setup.bash
 sudo rosdep init
 rosdep update
-sudo apt-get install -y python-wstool python-rosdep ninja-build
+sudo apt-get install -y python-rosinstall python-wstool python-rosdep ninja-build
 
 
 #install standard ros packages, build with catkin_make
@@ -60,7 +58,8 @@ cd ~/catkin_ws/src
 git clone https://github.com/swri-robotics/gps_umd.git
 git clone https://github.com/ros-geographic-info/geographic_info.git 
 cd ~/catkin_ws/
-rosdep install --from-paths src --ignore-src --rosdistro=indigo -y
+rosdep update
+rosdep install --from-paths src --ignore-src --rosdistro=indigo -y 
 catkin_make install
 
 #non-standard packages install
