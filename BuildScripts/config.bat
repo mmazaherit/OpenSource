@@ -1,12 +1,15 @@
 ::provides general config for the build scripts here
 :: it should only contains "set" variable commands, as it may be called several times
-set buildtype="Visual Studio 14 Win64" 
+set buildtype="Visual Studio 15 Win64" 
 set buildfolder=buildx64
 ::boost settings
-set boostver=1_63
+set boostver=1_61
 set boost=D:/ThirdParty/boost_%boostver%_0
 set boostlib=%boost%/lib64-msvc-14.0
 set boostvcver=vc140
+set Boost_INCLUDE_DIR=%boost%  
+set BOOST_ROOT=%boost%
+set Boost_LIBRARY_DIR=%boostlib%
 
 
 set mypath0=%~dp0
