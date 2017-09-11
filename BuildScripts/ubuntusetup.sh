@@ -22,39 +22,41 @@ mkdir ~/thirdparty
 #install cmake-gui from source, needs qt
 #sudo apt-get purge cmake -y
 sudo apt-get install qt4-default -y
-wget https://cmake.org/files/v3.9/cmake-3.9.0.tar.gz -P ~/thirdparty
-cd ~/thirdparty
-tar -xzvf ~/thirdparty/cmake-3.9.0.tar.gz
-cd ~/thirdparty/cmake-3.9.0
+wget https://cmake.org/files/v3.9/cmake-3.9.0.tar.gz -P ~/Downloads
+cd ~/Downloads
+tar -xzvf ~/Downloads/cmake-3.9.0.tar.gz
+cd ~/Downloads/cmake-3.9.0
 ./configure --qt-gui 
 make -j4
 sudo make install
 
 #install python from source
+#version=2.7.13
 #sudo apt-get install -y libbz2-dev zlib1g-dev
-#sudo apt-get install -y libexpat1-dev libssl-dev libncurses5-dev  liblzma-dev  libsqlite3-dev libffi-dev tcl-dev #libgdbm-dev libreadline-dev tk tk-dev
-#wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz -P ~/thirdparty
-#cd ~/thirdparty & tar xzf Python-3.6.2.tgz
-#cd ~/thirdparty/Python-3.6.2
+#sudo apt-get install -y libexpat1-dev libssl-dev libncurses5-dev  liblzma-dev  libsqlite3-dev libffi-dev tcl-dev libgdbm-dev libreadline-dev tk tk-dev libncurses5-dev libssl-dev
+#sudo apt-get install libd-dev
+#wget https://www.python.org/ftp/python/$version/Python-$version.tgz -P ~/Downloads
+#cd ~/Downloads & tar xzf Python-$version.tgz
+#cd ~/Downloads/Python-$version
 #./configure --enable-optimizations --with-ensurepip=install 
 #make 
 #make install
 
 #install anaconda, pyton + scientific packages
-wget https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh -P ~/Downloads
-bash ~/Downloads/Anaconda3-4.4.0-Linux-x86_64.sh
+#wget https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh -P ~/Downloads
+#bash ~/Downloads/Anaconda3-4.4.0-Linux-x86_64.sh
 
 
 #install qt, cmake gui needs it
-wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run -P ~/thirdparty
-chmod +x ~/thirdparty/qt-unified-linux-x64-online.run
-~/thirdparty/qt-unified-linux-x64-online.run
+wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run -P ~/Downloads
+chmod +x ~/Downloads/qt-unified-linux-x64-online.run
+~/Downloads/qt-unified-linux-x64-online.run
 
 
 #install eigen from source
-wget http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2 -P ~/thirdparty
-tar -xvjf ~/thirdparty/3.3.4.tar.bz2 -C ~/thirdparty
-cd ~/thirdparty/eigen-eigen-5a0156e40feb
+wget http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2 -P ~/Downloads
+tar -xvjf ~/Downloads/3.3.4.tar.bz2 -C ~/Downloads
+cd ~/Downloads/eigen-eigen-5a0156e40feb
 mkdir build
 cd build 
 cmake ..
@@ -63,8 +65,9 @@ sudo make install
 
 
 
-#install rabbitvcs
-sudo apt-get install rabbitvcs-nautilus3 rabbitvcs-nautilus rabbitvcs-thunar rabbitvcs-gedit rabbitvcs-cli -y
+#install rabbitvcs, need log off
+sudo apt-get install rabbitvcs-nautilus -y
+sudo apt-get install rabbitvcs-gedit rabbitvcs-cli -y
 chown -R $USER:$USER ~/.config/rabbitvcs
 
 #install ROS 
@@ -83,6 +86,7 @@ git clone https://github.com/ros-geographic-info/geographic_info.git
 cd ~/catkin_ws/
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y 
+pip install catkin_pkg
 catkin_make install
 
 #non-standard packages install
@@ -96,7 +100,7 @@ rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
 catkin_make_isolated --install --use-ninja
 
 #install virtualbox, secure boot must be disabled from bios
-sudo sh -c 'echo "deb http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib" >> /etc/apt/sources.list.d/virtualbox.list'
+sudo sh -c 'echo "deb http://download.virtualbox.org/virtualbox/debian xenial contrib" >> /etc/apt/sources.list.d/virtualbox.list'
 wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
 wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
 #sudo apt-get remove virtualbox virtualbox-4.* virtualbox-5.0
