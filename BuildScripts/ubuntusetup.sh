@@ -117,16 +117,19 @@ sudo apt-get install virtualbox-5.1 -y
 #install chrome
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -P ~/Downloads
 sudo dpkg -i --force-all ~/Downloads/google-chrome*.deb
+
 #install pycharm
 rm -r ~/.PyCharm*/
 wget https://download.jetbrains.com/python/pycharm-community-2017.2.1.tar.gz -P ~/Downloads
 cd ~/Downloads && tar xzf pycharm-community-2017.2.1.tar.gz
 cd  ~/Downloads/pycharm-community-2017.2.1/bin
+#run ./PyCharm
+
 #install onedrive
 cd ~/thirdparty
 git clone https://github.com/xybu92/onedrive-d.git
 cd onedrive-d
-./install-sh -y
+./install.sh -y
 onedrive-pref
 
 #add the following to startup
