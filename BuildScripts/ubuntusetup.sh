@@ -99,6 +99,17 @@ rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
 catkin_make_isolated --install --use-ninja
 
+#install openCV
+cd ~/thirdparty
+git clone https://github.com/opencv/opencv.git
+cd opencv
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
+make
+sudo make install
+
+
 #install virtualbox, secure boot must be disabled from bios
 sudo sh -c 'echo "deb http://download.virtualbox.org/virtualbox/debian xenial contrib" >> /etc/apt/sources.list.d/virtualbox.list'
 wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
