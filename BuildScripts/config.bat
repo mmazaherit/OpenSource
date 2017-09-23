@@ -16,6 +16,9 @@ set mypath0=%~dp0
 set mypath=%mypath0:\=/%
 
 set cmakebuildrelease=cmake --build . --target ALL_BUILD --config Release
-set cmakebuilddebug=cmake --build . --target ALL_BUILD --config Debug
+set cmakebuildreleaseinstall=cmake --build . --target INSTALL --config Release
 
-set "cmakebuild=%cmakebuildrelease% & %cmakebuilddebug%"
+set cmakebuilddebug=cmake --build . --target INSTALL --config Debug
+set cmakebuilddebuginstall=cmake --build . --target INSTALL --config Debug
+
+set "cmakebuild=%cmakebuildrelease% & %cmakebuildinstall% & %cmakebuilddebug% & %cmakebuilddebuginstall%"
