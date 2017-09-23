@@ -21,4 +21,4 @@ set cmakebuildreleaseinstall=cmake --build . --target INSTALL --config Release
 set cmakebuilddebug=cmake --build . --target INSTALL --config Debug
 set cmakebuilddebuginstall=cmake --build . --target INSTALL --config Debug
 
-set "cmakebuild=%cmakebuildrelease% & %cmakebuildinstall% & %cmakebuilddebug% & %cmakebuilddebuginstall%"
+set "cmakebuild=%cmakebuildrelease% & %cmakebuildreleaseinstall% & %cmakebuilddebug% & %cmakebuilddebuginstall%"
