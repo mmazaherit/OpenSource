@@ -140,7 +140,24 @@ static inline std::string GetFilePathWithoutExtention(const std::string &FilePat
   found = FilePath.find_last_of(".");
   return FilePath.substr(0, found);
 }
+//https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
+static inline std::vector<std::string> split(const std::string& s, const char delimiter=' ')
+{
+	std::vector<std::string> tokens;
 
+	for (size_t start = 0, end; start < s.length(); start = end + 1)
+	{
+		size_t position = s.find(delimiter, start);
+		end = position != std::string::npos ? position : s.length();
+
+		std::string token =trim(s.substr(start, end - start));
+		if (!token.empty())
+		{
+			tokens.push_back(token);
+		}
+	}
+	return tokens;
+}
 static inline std::string GetMyDocsDirA()
 {
     std::string my_docs_dir;
