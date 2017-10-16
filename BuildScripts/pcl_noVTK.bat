@@ -57,5 +57,5 @@ set qhull=%pclthirdparty%/qhull
 
 
 
-cmake .. -G %buildtype% -DBUILD_visualization=off -DEIGEN_INCLUDE_DIR=%pclthirdparty%/eigen-eigen -DFLANN_INCLUDE_DIR=%flann%/src/cpp -DFLANN_LIBRARY=%flannbuild%/lib/Release/flann_s.lib -DFLANN_LIBRARY_DEBUG=%flannbuild%/lib/Debug/flann_s.lib -DZLIB_INCLUDE_DIR=%zlib% -DZLIB_LIBRARY_DEBUG=%zlibbuild%Debug/zlibd.lib -DZLIB_LIBRARY_RELEASE=%zlibbuild%/Debug/zlib.lib -DQHULL_INCLUDE_DIR=%qhull%/src -DQHULL_LIBRARY=%qhull%/%buildfolder%/Release/qhullstatic.lib -DQHULL_LIBRARY_DEBUG=%qhull%/%buildfolder%/Debug/qhullstatic.lib  -DBoost_INCLUDE_DIR=%boost%  -DBoost_LIBRARY_DIR=%boostlib%
+cmake .. -G %buildtype% -DBUILD_visualization=off -DWITH_VTK=off -DEIGEN_INCLUDE_DIR=%pclthirdparty%/eigen-eigen -DFLANN_INCLUDE_DIR=%flann%/src/cpp -DFLANN_LIBRARY=%flannbuild%/lib/Release/flann_s.lib -DFLANN_LIBRARY_DEBUG=%flannbuild%/lib/Debug/flann_s.lib -DZLIB_INCLUDE_DIR=%zlib% -DZLIB_LIBRARY_DEBUG=%zlibbuild%Debug/zlibd.lib -DZLIB_LIBRARY_RELEASE=%zlibbuild%/Debug/zlib.lib -DQHULL_INCLUDE_DIR=%qhull%/src -DQHULL_LIBRARY=%qhull%/%buildfolder%/Release/qhullstatic.lib -DQHULL_LIBRARY_DEBUG=%qhull%/%buildfolder%/Debug/qhullstatic.lib  -DBoost_INCLUDE_DIR=%boost%  -DBoost_LIBRARY_DIR=%boostlib%
 %cmakebuild%
