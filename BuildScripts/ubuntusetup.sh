@@ -1,4 +1,4 @@
-#for ubuntu 14.04.5
+#for ubuntu 16
 #add rep
 sudo add-apt-repository ppa:rabbitvcs/ppa -y
 sudo add-apt-repository ppa:nathan-renniewaldock/flux -y
@@ -98,6 +98,14 @@ wstool update -t src
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
 catkin_make_isolated --install --use-ninja
+
+#install qt ros plugin
+#http://ros-industrial.github.io/ros_qtc_plugin/_source/Improve-ROS-Qt-Creator-Plugin-Developers-ONLY.html
+sudo add-apt-repository ppa:levi-armstrong/qt-libraries-xenial
+sudo add-apt-repository ppa:levi-armstrong/ppa
+sudo apt-get update
+sudo apt-get install qt57creator-plugin-ros
+
 
 #install openCV
 cd ~/thirdparty
