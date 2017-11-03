@@ -11,9 +11,15 @@
 #include <iomanip>
 #include <algorithm>
 
-static const double DEG2RAD = 0.0174532925199433;
-static const double RAD2DEG = 57.2957795130823;
-static const double PI = 3.14159265358979;
+#ifndef DEG2RAD
+#define DEG2RAD  0.0174532925199433;
+#endif
+#ifndef RAD2DEG
+#define RAD2DEG  57.2957795130823;
+#endif
+#ifndef PI
+#define PI  3.14159265358979;
+#endif
 
 
 #ifdef WIN32
@@ -163,8 +169,8 @@ static inline std::vector<std::string> split(const std::string& s, const char de
 	{
 		size_t position = s.find(delimiter, start);
 		end = position != std::string::npos ? position : s.length();
-
-		std::string token =trim(s.substr(start, end - start));
+        std::string substr=s.substr(start, end - start);
+        std::string token =trim(substr);
 		if (!token.empty())
 		{
 			tokens.push_back(token);
