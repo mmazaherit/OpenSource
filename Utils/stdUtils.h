@@ -219,6 +219,12 @@ inline std::string ReadWholeFile(const std::string& FilePath)
     return Buffer;
     
 }
+//https://stackoverflow.com/questions/5840148/how-can-i-get-a-files-size-in-c
+static inline std::ifstream::pos_type GetFileSize(const char* filename)
+{
+    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+    return in.tellg(); 
+}
 static inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory, const std::string filter="*")
 {
     std::vector<std::string> out;
