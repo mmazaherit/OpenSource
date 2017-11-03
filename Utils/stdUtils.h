@@ -40,7 +40,21 @@ static inline std::string &trim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     return ltrim(rtrim(s, t), t);
 }
+static inline std::wstring s2ws(const std::string& str)
+{
+  //using convert_typeX = std::codecvt_utf8<wchar_t>;
+  //std::wstring_convert<convert_typeX, wchar_t> converterX;
+  //return converterX.from_bytes(str);
+  return std::wstring(str.begin(), str.end());
+}
 
+static inline std::string ws2s(const std::wstring& wstr)
+{
+  //using convert_typeX = std::codecvt_utf8<wchar_t>;
+  //std::wstring_convert<convert_typeX, wchar_t> converterX;
+  //return converterX.to_bytes(wstr);
+  return std::string(wstr.begin(), wstr.end());
+}
 //http://stackoverflow.com/questions/16605967/set-precision-of-stdto-string-when-converting-floating-point-values
 template <typename T>
 static inline std::string to_string_with_precision(const T a_value, const int n = 6)
