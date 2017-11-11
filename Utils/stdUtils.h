@@ -12,13 +12,13 @@
 #include <algorithm>
 
 #ifndef DEG2RAD
-#define DEG2RAD  0.0174532925199433;
+#define DEG2RAD  0.0174532925199433
 #endif
 #ifndef RAD2DEG
-#define RAD2DEG  57.2957795130823;
+#define RAD2DEG  57.2957795130823
 #endif
 #ifndef PI
-#define PI  3.14159265358979;
+#define PI  3.14159265358979
 #endif
 
 
@@ -29,22 +29,20 @@
     #include  <sys/stat.h>
     #include <dirent.h>
 #endif
-// trim from left
-static inline std::string &ltrim(std::string &s, const char* t = " \t\n\r\f\v")
+
+static inline std::string &lTrim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     s.erase(0, s.find_first_not_of(t));
     return s;
 }
-// trim from right
-static inline std::string &rtrim(std::string &s, const char* t = " \t\n\r\f\v")
+static inline std::string &rTrim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     s.erase(s.find_last_not_of(t) + 1);
     return s;
 }
-// trim from left & right
-static inline std::string &trim(std::string &s, const char* t = " \t\n\r\f\v")
+static inline std::string &Trim(std::string &s, const char* t = " \t\n\r\f\v")
 {
-    return ltrim(rtrim(s, t), t);
+    return lTrim(rTrim(s, t), t);
 }
 static inline std::wstring s2ws(const std::string& str)
 {
@@ -53,7 +51,6 @@ static inline std::wstring s2ws(const std::string& str)
   //return converterX.from_bytes(str);
   return std::wstring(str.begin(), str.end());
 }
-
 static inline std::string ws2s(const std::wstring& wstr)
 {
   //using convert_typeX = std::codecvt_utf8<wchar_t>;
@@ -63,7 +60,7 @@ static inline std::string ws2s(const std::wstring& wstr)
 }
 //http://stackoverflow.com/questions/16605967/set-precision-of-stdto-string-when-converting-floating-point-values
 template <typename T>
-static inline std::string to_string_with_precision(const T a_value, const int n = 6)
+static inline std::string ToStringWithPrecision(const T a_value, const int n = 6)
 {
     std::ostringstream out;
     out << std::setprecision(n) << a_value;
@@ -77,7 +74,7 @@ static inline std::string STR(const T value)
 template <typename T>
 static inline std::string STR(const T value, const int n)
 {
-	return to_string_with_precision(value);
+	return ToStringWithPrecision(value);
 }
 template <typename T>
 static inline std::string STR31(const T * pvalue, const int precision = 6, const char* delimiter = " ")
@@ -111,7 +108,7 @@ static inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(cons
             ss >> s;
             
             //if (!getline(ss, s, ',')) break;
-            if (!trim(s).empty())
+            if (!Trim(s).empty())
                 record.push_back(s);
         }
         
@@ -130,7 +127,6 @@ static inline std::string GetFileName(const std::string &FilePath)
     found = FilePath.find_last_of("/\\");
     return FilePath.substr(found + 1);
 }
-
 static inline std::string GetFileNameWithoutExtention(const std::string &FilePath)
 {
     std::string filename = GetFileName(FilePath);
@@ -155,13 +151,12 @@ static inline std::string GetFileFolderName(const std::string &FilePath)
 //returns the full tile path, but just drop the extension
 static inline std::string GetFilePathWithoutExtention(const std::string &FilePath)
 {
-
   size_t found;
   found = FilePath.find_last_of(".");
   return FilePath.substr(0, found);
 }
 //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
-static inline std::vector<std::string> split(const std::string& s, const char delimiter=' ')
+static inline std::vector<std::string> Split(const std::string& s, const char delimiter=' ')
 {
 	std::vector<std::string> tokens;
 
@@ -170,7 +165,7 @@ static inline std::vector<std::string> split(const std::string& s, const char de
 		size_t position = s.find(delimiter, start);
 		end = position != std::string::npos ? position : s.length();
         std::string substr=s.substr(start, end - start);
-        std::string token =trim(substr);
+        std::string token =Trim(substr);
 		if (!token.empty())
 		{
 			tokens.push_back(token);
@@ -211,7 +206,7 @@ static inline std::string GetExePathA()
   return std::string(exepath);;
   #endif
 }
-inline std::string ReadWholeFile(const std::string& FilePath)
+static inline std::string ReadWholeFile(const std::string& FilePath)
 {
     //read the whole file
     std::ifstream ifs(FilePath.c_str());
@@ -222,8 +217,7 @@ inline std::string ReadWholeFile(const std::string& FilePath)
     ifs.read(&Buffer[0], length);
     ifs.close();
     
-    return Buffer;
-    
+    return Buffer;    
 }
 //https://stackoverflow.com/questions/5840148/how-can-i-get-a-files-size-in-c
 static inline std::ifstream::pos_type GetFileSize(const char* filename)
@@ -291,9 +285,8 @@ static inline std::vector<std::string> GetFilesInDirectoryA(const std::string di
 
 
 ////////////////////////////////////////////////////////////////////////// VECTOR UTILS
-
 template <typename T>
-inline std::vector<size_t> sort_indexes_asc(const std::vector<T> &v)
+inline std::vector<size_t> SortIndexesAsc(const std::vector<T> &v)
 {
 
     // initialize original index locations
@@ -307,7 +300,7 @@ inline std::vector<size_t> sort_indexes_asc(const std::vector<T> &v)
     return idx;
 }
 template <typename T>
-inline std::vector<size_t> sort_indexes_des(const std::vector<T> &v)
+inline std::vector<size_t> SortIndexesDec(const std::vector<T> &v)
 {
 
     // initialize original index locations
@@ -320,15 +313,6 @@ inline std::vector<size_t> sort_indexes_des(const std::vector<T> &v)
     
     return idx;
 }
-
-//http://stackoverflow.com/questions/9323903/most-efficient-elegant-way-to-clip-a-number
-template <typename T>
-T inline clip(const T& n, const T& lower, const T& upper)
-{
-    return std::max(lower, std::min(n, upper));
-}
-
-
 //http://stackoverflow.com/questions/6892754/creating-a-simple-configuration-file-and-parser-in-c
 inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFile)
 {
@@ -348,14 +332,14 @@ inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFi
         std::string key;
         if (std::getline(is_line, key, '='))
         {
-            key = trim(key);
+            key = Trim(key);
             std::string value;
             if (std::getline(is_line, value))
             {
                 if (config.count(key))
                     std::cout << "Warning duplicate setting " << key << std::endl;
                     
-                config[key] = trim(value);
+                config[key] = Trim(value);
             }
             
         }
@@ -366,6 +350,12 @@ inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFi
 }
 
 ////////////////////////////////////////////////////////////////////////// MATH UTILS
+//http://stackoverflow.com/questions/9323903/most-efficient-elegant-way-to-clip-a-number
+template <typename T>
+static inline T Clip(const T& n, const T& lower, const T& upper)
+{
+	return std::max(lower, std::min(n, upper));
+}
 template<typename T>
 static inline T DotProduct31(const T* const A, const T* const B)
 {
@@ -384,7 +374,6 @@ static inline void Subtractn(T* AminusB, const T* const A, const T* const B)
 	for(int i=0;i<n;++i)
 	AminusB[i] = A[i] - B[i];	
 }
-
 template<typename T>
 static inline T Distance31(const T* const vec1, const T* const vec2)
 {
@@ -392,7 +381,6 @@ static inline T Distance31(const T* const vec1, const T* const vec2)
     Subtract31(res,vec1, vec2);
     return sqrt(DotProduct31(res, res));
 }
-
 template<typename T>
 static inline void product441(T* result, const T* const mat44, const T* const mat41)
 {
@@ -408,8 +396,6 @@ static inline void product331(T* result, const T* const mat33, const T* const ma
 	result[1] = mat33[3] * mat31[0] + mat33[4] * mat31[1] + mat33[5] * mat31[2]  ;
 	result[2] = mat33[6] * mat31[0] + mat33[7] * mat31[1] + mat33[8] * mat31[2] ;
 }
-
-
 template<typename T>
 static inline void ComputeMean(int n, const T* const Values, double MeanMinMax[3])
 {
@@ -459,7 +445,6 @@ static inline void Scale31(T* result, T scale, const  T * values)
 	result[1]=values[1] * scale;
 	result[2]=values[2] * scale;
 }
-
 template<typename T>
 static inline void Scale41(T scale, T * values)
 {
@@ -481,7 +466,6 @@ static inline void Scale(T scale, T * values)
 	for (int i = 0; i < n; ++i)
 		values[i] *= scale;
 }
-
 template<typename T>
 static inline T Norm31(const T * const values)
 {
@@ -492,7 +476,6 @@ static inline T Norm41(const T * const values)
 {
 	return sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2]+ values[3] * values[3]);
 }
-
 //A=B
 template<typename T>
 static inline void Copy31(T * dst, const T* src)
@@ -509,7 +492,6 @@ static inline void Copy41(T * dst, const T* src)
 	dst[2] = src[2];
 	dst[3] = src[3];
 }
-
 //A=A+alpha*B
 template<typename T>
 static inline void Sum31(T * A, const T* B, T alpha = T(1.0))
@@ -546,12 +528,11 @@ static inline void Sum41(T* Result, const T * A, const T* B, T alpha = T(1.0))
 	Result[3] = A[3] + alpha*B[3];
 
 }
-template<typename T> static inline void setzero3(T * val) { val[0] = val[1] = val[2] = T(0.0); }
-template<typename T> static inline void setzero4(T * val) { val[0] = val[1] = val[2] = val[3]= T(0.0); }
-
+template<typename T> static inline void SetZero3(T * val) { val[0] = val[1] = val[2] = T(0.0); }
+template<typename T> static inline void SetZero4(T * val) { val[0] = val[1] = val[2] = val[3]= T(0.0); }
 /*skew symmetric matrix*/
 template<typename T>
-static inline void skew(T * skewt, const T * t)
+static inline void Skew(T * skewt, const T * t)
 {
 	skewt[0] = T(0.0);	skewt[1] = -t[2];	skewt[2] = t[1];
 	skewt[3] = t[2]; 	skewt[4] = T(0.0); 		skewt[5] = -t[0];
@@ -559,14 +540,13 @@ static inline void skew(T * skewt, const T * t)
 }
 /*skew symmetric matrix squared*/
 template<typename T>
-static inline void skew2(T * sewsqt, const T * t)
+static inline void Skew2(T * sewsqt, const T * t)
 {
 
 	sewsqt[0] = -(t[2] * t[2] + t[1] * t[1]);		sewsqt[1] = t[1] * t[0];	sewsqt[2] = t[0] * t[2];
 	sewsqt[3] = sewsqt[1]; 	sewsqt[4] = -(t[2] * t[2] + t[0] * t[0]); 		sewsqt[5] = t[2] * t[1];
 	sewsqt[6] = sewsqt[2]; 	sewsqt[7] = sewsqt[5]; 	sewsqt[8] = -(t[1] * t[1] + t[0] * t[0]);
 }
-
 //http://stackoverflow.com/questions/8942950/how-do-i-find-the-orthogonal-projection-of-a-point-onto-a-plane
 template<typename T>
 static inline void PointToPlaneProjection(const T* const Plane4Coef, const T* const point, T Projection[3])
@@ -619,7 +599,6 @@ static inline void PointToLineProjection(const T *const LineDirection, const T *
   PointToLineVector[2] -=  dot / dotvec*PointToLineVector[2];
   
 }
-
 //https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
 template<typename T>
 static inline bool LineToPlaneIntersection(const T *const LineDirection, const T *const PointOnline, const T *const Plane4Coeef, T IntersectionPoint[3])
@@ -646,4 +625,4 @@ static inline bool LineToPlaneIntersection(const T *const LineDirection, const T
   return true;
   
 }
-#endif // StreamUtils_h__
+#endif 
