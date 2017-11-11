@@ -10,6 +10,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <limits>
 
 #ifndef DEG2RAD
 #define DEG2RAD  0.0174532925199433
@@ -27,6 +28,7 @@
     #include <shlobj.h>
 #else
     #include  <sys/stat.h>
+    #include  <unistd.h>
     #include <dirent.h>
 #endif
 
@@ -211,7 +213,7 @@ static inline std::string ReadWholeFile(const std::string& FilePath)
     //read the whole file
     std::ifstream ifs(FilePath.c_str());
     ifs.seekg(0, std::ios::end);
-    size_t length = ifs.tellg();
+    auto length = ifs.tellg();
     std::string Buffer(length, '0');
     ifs.seekg(0, std::ios::beg);
     ifs.read(&Buffer[0], length);
@@ -322,7 +324,7 @@ inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFi
     {
         std::cout << "could not find the config file " << ConfigFile << std::endl;
         return config;
-    }   
+    }
     std::string line;
     while (std::getline(is_file, line))
     {
@@ -400,8 +402,8 @@ template<typename T>
 static inline void ComputeMean(int n, const T* const Values, double MeanMinMax[3])
 {
     double Sum = 0;
-    T Max = -std::numeric_limits<T>::max();
-    T Min = std::numeric_limits<T>::max();
+    T Max = -(std::numeric_limits<T>::max)();
+    T Min = (std::numeric_limits<T>::max)();
     
     for (int i = 0; i < n; i++)
     {

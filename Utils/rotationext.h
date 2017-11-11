@@ -143,6 +143,8 @@ namespace ceres
 			euler1[0] = euler2[0] = -euler1[2] + atan2(-RzRyRx(0, 1), -RzRyRx(0, 2))*radians2degreee;
 			return false;
 		}
+
+		return false;
 	}
 
 
