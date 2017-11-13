@@ -48,7 +48,11 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-
+#include <assert.h>  
+#ifndef CHECK_EQ
+// Check_op macro definitions
+#define CHECK_EQ(val1, val2) assert(val1==val2)
+#endif
 namespace ceres {
 
 // Trivial wrapper to index linear arrays as matrices, given a fixed
