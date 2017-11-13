@@ -1,5 +1,5 @@
 #pragma  once
-#include "ceres/rotation.h"
+#include "rotation.h"
 namespace ceres
 {
   // ceres default rotation is Rz*Ry*Rx
