@@ -50,8 +50,7 @@ public:
 	}
 	void EcefToGeodetic(double &lat, double &lon, double &h, double x, double y, double z, double tol=0.001)
 	{
-		lon = atan2(y,x);
-		const double r = sqrt(x*x + y*y + z*z);
+		lon = atan2(y,x);		
 		const double p = sqrt(x*x + y*y);
 		lat = atan2(p, z);
 		double prev_h = 999999;
