@@ -60,6 +60,7 @@ public:
 		lat = atan2(p, z);
 		double prev_h = 999999;
 		int nIterations = 0;
+    h=0;
 		do
 		{
 			++nIterations;
