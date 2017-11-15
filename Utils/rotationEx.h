@@ -286,7 +286,7 @@ void TestEulerAnglesToRzRyRx()
   ceres::CreateRotationRzRyRx(eulers1, ceres::RowMajorAdapter3x3(testR1));
   ceres::CreateRotationRzRyRx(eulers2, ceres::RowMajorAdapter3x3(testR2));
   
-  Subtractn<double, 9>(testR1, testR1, testR2);
+  //Subtractn<double, 9>(testR1, testR1, testR2);
   
   double eulerinputambig[3] { -10,90,0 };
   double Rinputamb[9];
