@@ -8,20 +8,6 @@ namespace ceres
   // Qualifier:
   // Parameter: const T * t_xyz , array of sequential rotation in degrees around x , y , z axis
   //************************************
-  template <typename T>
-  static inline void CreateRotationRzRyRx(const T *t_xyz,
-                                          const int row_stride_parameter,
-                                          T *R)
-  {
-    CHECK_EQ(row_stride_parameter, 3);
-    CreateRotationRzRyRx(t_xyz, RowMajorAdapter3x3(R));
-  }
-  // ceres default rotation is Rz*Ry*Rx
-  //************************************
-  // Method:    CreateRzRyRx
-  // Qualifier:
-  // Parameter: const T * t_xyz , array of sequential rotation in degrees around x , y , z axis
-  //************************************
   template <typename T, int row_stride, int col_stride>
   static void CreateRotationRzRyRx(
     const T *t_xyz,
@@ -53,15 +39,8 @@ namespace ceres
     R(2, 1) = c2*s3;
     R(2, 2) = c2*c3;
   }
-  // photogrammetric convention M=Mz*My*Mx  where M=R'
-  template <typename T>
-  static inline void CreateMzMyMx(const T *euler,
-                                  const int row_stride_parameter,
-                                  T *MzMyMx)
-  {
-    CHECK_EQ(row_stride_parameter, 3);
-    CreateMzMyMx(euler, RowMajorAdapter3x3(MzMyMx));
-  }
+  
+  // photogrammetric convention M=Mz*My*Mx  where M=R'  
   //************************************
   // Method:    EulerAnglesToMzMyMx
   // FullName:  ceres::EulerAnglesToMzMyMx
@@ -71,7 +50,7 @@ namespace ceres
   // Parameter: const T * t_xyz array of sequential rotation in degrees around x , y , z axis
   //************************************
   template <typename T, int row_stride, int col_stride>
-  static void CreateMzMyMx(
+  static void CreateRotationMzMyMx(
     const T *t_xyz,
     const MatrixAdapter<T, row_stride, col_stride>& MzMyMx)
   {
@@ -101,6 +80,7 @@ namespace ceres
     MzMyMx(2, 1) = -costy*sintx;
     MzMyMx(2, 2) = costy*costx;
   }
+  
   //two sets of Euler angles corresponds to the same rotation matrix
   //************************************
   // Method:    RotationToRzRyRx, decomposes a rotation matrix to sequential 2D rotations RzRyRx=Rz*Ry*Rx
@@ -108,13 +88,6 @@ namespace ceres
   // Parameter: T * t1_xyz  array of sequential rotation in degrees around x , y , z axis
   // Parameter: T * t2_xyz  array of sequential rotation in degrees around x , y , z axis
   //************************************
-  template <typename T>
-  static inline bool DecomposeRotationToRzRyRx(const int row_stride_parameter, const T *RzRyRx, T *t1_xyz, T *t2_xyz)
-  {
-    CHECK_EQ(row_stride_parameter, 3);
-    return DecomposeRotationToRzRyRx(RowMajorAdapter3x3(RzRyRx), t1_xyz,t2_xyz);
-  }
-  
   template <typename T, int row_stride, int col_stride>
   static inline bool DecomposeRotationToRzRyRx(const MatrixAdapter<T, row_stride, col_stride>& RzRyRx, T *t1_xyz, T *t2_xyz)
   {
@@ -156,15 +129,15 @@ namespace ceres
     
     return false;
   }
-  
-  
-  
-  template <typename T>
-  static inline void DecomposeRotationToNovatelRPY(const int row_stride_parameter, const T *RzRxRy, T *euler)
-  {
-    CHECK_EQ(row_stride_parameter, 3);
-    DecomposeRotationToNovatelRPY(RowMajorAdapter3x3(RzRxRy), euler);
-  }
+
+  //************************************
+  // Method:    DecomposeRotationToNovatelRPY  
+  // Access:    public static 
+  // Returns:   void
+  // Qualifier: 
+  // Parameter: col_stride> & R  rotation from child to parent (body to local frame)
+  // Parameter: T * RPY in degrees
+  //************************************
   template <typename T, int row_stride, int col_stride>
   static inline void  DecomposeRotationToNovatelRPY(const MatrixAdapter<T, row_stride, col_stride>& R, T *RPY)
   {
@@ -184,16 +157,8 @@ namespace ceres
   // Parameter: const T * RPY roll pitch yaw in degrees based on novatel output https://www.novatel.com/assets/Documents/Bulletins/apn037.pdf
   // Roll is around Y, Pitch is around X, Yaw is around Z all in degrees, Novatel azimuth is positive in clockwise, so it must be negated to become Yaw
   // Parameter: const int row_stride_parameter
-  // Parameter: T * R   Rotaton of body to loval level frame Rb2l
+  // Parameter: T * R   Rotaton of body to loval level frame (Rb2l)
   //************************************
-  template <typename T>
-  static inline void CreateRotationNovatelRPY(const T *RPY,
-      const int row_stride_parameter,
-      T *R)
-  {
-    CHECK_EQ(row_stride_parameter, 3);
-    CreateRotationNovatelRPY(RPY, RowMajorAdapter3x3(R));
-  }
   template <typename T, int row_stride, int col_stride>
   static void CreateRotationNovatelRPY(const T *RPY,const MatrixAdapter<T, row_stride, col_stride>& R)
   {
@@ -253,11 +218,11 @@ namespace ceres
   
   //R is row major
   template <typename T>
-  static inline void RotatePoint(const T *const R, const T *const Pt, T *RotatedPoint)
+  static inline void RotatePoint(const T *const R_rowMajor, const T *const Pt, T *RotatedPoint)
   {
-    RotatedPoint[0] = R[0] * Pt[0] + R[1] * Pt[1] + R[2] * Pt[2];
-    RotatedPoint[1] = R[3] * Pt[0] + R[4] * Pt[1] + R[5] * Pt[2];
-    RotatedPoint[2] = R[6] * Pt[0] + R[7] * Pt[1] + R[8] * Pt[2];
+    RotatedPoint[0] = R_rowMajor[0] * Pt[0] + R_rowMajor[1] * Pt[1] + R_rowMajor[2] * Pt[2];
+    RotatedPoint[1] = R_rowMajor[3] * Pt[0] + R_rowMajor[4] * Pt[1] + R_rowMajor[5] * Pt[2];
+    RotatedPoint[2] = R_rowMajor[6] * Pt[0] + R_rowMajor[7] * Pt[1] + R_rowMajor[8] * Pt[2];
   }
   //https://www.mathworks.com/help/aeroblks/quaternionmultiplication.html
   template <typename T>
@@ -274,24 +239,4 @@ namespace ceres
   
 }
 
-void TestEulerAnglesToRzRyRx()
-{
-  double eulerinput1[3] { 10,20,30 };
-  double Rinput1[9];
-  ceres::EulerAnglesToRotationMatrix(eulerinput1, ceres::RowMajorAdapter3x3(Rinput1));
-  
-  double eulers1[3], eulers2[3], testR1[9], testR2[9];
-  
-  ceres::DecomposeRotationToRzRyRx(ceres::RowMajorAdapter3x3(Rinput1), eulers1, eulers2);
-  ceres::CreateRotationRzRyRx(eulers1, ceres::RowMajorAdapter3x3(testR1));
-  ceres::CreateRotationRzRyRx(eulers2, ceres::RowMajorAdapter3x3(testR2));
-  
-  //Subtractn<double, 9>(testR1, testR1, testR2);
-  
-  double eulerinputambig[3] { -10,90,0 };
-  double Rinputamb[9];
-  ceres::CreateRotationRzRyRx(eulerinputambig, ceres::RowMajorAdapter3x3(Rinputamb));
-  ceres::DecomposeRotationToRzRyRx(ceres::RowMajorAdapter3x3(Rinputamb), eulers1, eulers2);
-  
-  ceres::CreateRotationRzRyRx(eulers1, ceres::RowMajorAdapter3x3(testR1));
-}
+
