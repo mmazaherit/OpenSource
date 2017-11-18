@@ -23,12 +23,17 @@ int TestEulerAnglesToRzRyRx()
 	if (n41 > 0.0000001)
 		return -1;
 
-	double eulerinputambig[3]{ -10,90,0 };
+	double eulerinputambig[3]{ -10,50,20 };
 	double Rinputamb[9];
 	ceres::CreateRotationRzRyRx(eulerinputambig, ceres::RowMajorAdapter3x3(Rinputamb));
 	ceres::DecomposeRotationToRzRyRx(ceres::RowMajorAdapter3x3(Rinputamb), eulers1, eulers2);
 
-	ceres::CreateRotationRzRyRx(eulers1, ceres::RowMajorAdapter3x3(testR1));
+	for (int i = 0; i < 3; ++i)
+	{
+		if (abs(eulers1[i] - eulerinputambig[i]) > 0.000001)
+			return -1;
+	}
+	
 	return 0;
 }
 
