@@ -328,7 +328,7 @@ template <typename T>
 	 if (value < *vec.begin())
 		 return &(*vec.begin());
 
-	 std::vector<T>::iterator lastit = vec.end()-1;
+	 typename std::vector<T>::iterator lastit = vec.end()-1;
 
 	 //if value is greater than all of the values in vector
 	 if (value > *lastit)
