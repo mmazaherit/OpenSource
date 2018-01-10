@@ -60,34 +60,93 @@ int TestEulerAnglesToRzRyRx()
 	return 0;
 }
 
+template <class T>
+int testvalues(T vec1)
+{
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 1.1) != 1)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 0.1) != 1)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 3.1) != 3)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 2) != 2)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 2.6) != 3)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 2.5) != 3)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 2.3) != 2)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 4) != 4)
+		return -1;
+	if (*FindClosestValue(vec1.begin(), vec1.end(), 4.1) != 4)
+		return -1;
+
+	return 0;
+}
+
+int testvaluesMap(std::map<int,double> vec1)
+{
+    
+	if (FindClosestKey(vec1, 1.1)->first != 1)
+		return -1; 		   
+	if (FindClosestKey(vec1, 0.1)->first != 1)
+		return -1; 		   
+	if (FindClosestKey(vec1, 3.1)->first != 3)
+		return -1; 		   
+	if (FindClosestKey(vec1, 2)->first != 2)
+		return -1; 		   
+	if (FindClosestKey(vec1, 2.6)->first != 3)
+		return -1; 		   
+	if (FindClosestKey(vec1, 2.5)->first != 3)
+		return -1; 		   
+	if (FindClosestKey(vec1, 2.3)->first != 2)
+		return -1; 		   
+	if (FindClosestKey(vec1, 4)->first != 4)
+		return -1; 		   
+	if (FindClosestKey(vec1, 4.1)->first != 4)
+		return -1;
+
+		 return 1;
+}
+
+
 int main()
 {
   TestEulerAnglesToRzRyRx();
   TestGeodesy();
 
+  //check if empty
   std::vector<int> vec1;
+  if (FindClosestValue(vec1.begin(), vec1.end(), 2.3) != vec1.end())
+	  return -1;
   vec1.push_back(1);
+  //chekc when has only 1 item
+  if (*FindClosestValue(vec1.begin(), vec1.end(), 1.1) != 1)
+	  return -1;
+
   vec1.push_back(2);
   vec1.push_back(3);
   vec1.push_back(4);
 
-
-  if (*FindClosestValueInAscendingVector(vec1, 0.1) != 1)
+  if (testvalues(vec1) < 0)
 	  return -1;
-  if (*FindClosestValueInAscendingVector(vec1, 3.1) != 3)
-	  return -1;
-  if (*FindClosestValueInAscendingVector(vec1, 2) != 2)
-	  return -1;
-  if (*FindClosestValueInAscendingVector(vec1, 2.6) != 3)
-	  return -1;
-  if (*FindClosestValueInAscendingVector(vec1, 2.5) != 3)
-	  return -1;
-  if (*FindClosestValueInAscendingVector(vec1, 2.3) != 2)
-	  return -1;
-
   
 
+  std::map<int, double> testmap;
+  //check empty
+  if (FindClosestKey(testmap,1.1)!=testmap.end())
+	  return -1;  
+  testmap[1] = 1;
+  //check only 1 value
+  if (FindClosestKey(testmap, 1.1)->first != 1)
+	  return -1;
+  testmap[3] = 3;
+  testmap[2] = 2;
+  testmap[4] = 4;
 
+  if (testvaluesMap(testmap) < 0)
+	  return -1;
 
   return 0;
 }

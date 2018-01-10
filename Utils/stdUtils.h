@@ -4,7 +4,6 @@
 #include <ostream>
 #include <string>
 #include <sstream>
-#include <iterator>
 #include <iostream>
 #include <vector>
 #include <map>
@@ -192,7 +191,7 @@ static  std::string GetMyDocsDirA()
     }
     #endif
     return my_docs_dir;
-};
+}
 static  std::string GetExePathA()
 {
   #ifdef WIN32
@@ -318,33 +317,58 @@ template <typename T>
 }
  //https://stackoverflow.com/questions/8647635/elegant-way-to-find-closest-value-in-a-vector-from-above
  //the vector must be sorted in ascending order
- template <typename T, typename Tv>
- T* FindClosestValueInAscendingVector(std::vector<T> &vec, Tv value)
- {	 
-	 if (vec.size() == 0)
-		 return NULL;
+ template <class ForwardIt, typename T>
+ ForwardIt FindClosestValue(ForwardIt first, ForwardIt last, T value)
+ {	 	 
+	 if (first == last)
+		 return last;
 
-	 //value is smaller than all of them
-	 if (value < *vec.begin())
-		 return &(*vec.begin());
+	 auto it = std::lower_bound(first, last, value);
+	 if (it == last)
+		 return std::prev(last);
 
-	 typename std::vector<T>::iterator lastit = vec.end()-1;
-
-	 //if value is greater than all of the values in vector
-	 if (value > *lastit)
-		 return &(*lastit);
-
-	 auto it = std::lower_bound(vec.begin(), vec.end(), value);
-	 
-	 if (vec.size() == 1)
-		 return &(*it);
-
-	 auto previt = it - 1;
+	 if (it == first)
+		 return it;	
+	 auto previt = std::prev(it);
 
 	 if (std::abs(value - *previt) < std::abs(value - *it))
-		 return &(*previt);
+		 return previt;
 	 else
-		 return &(*it);
+		 return it;
+ }
+
+ template<typename Key, typename Val>
+ using MapIterator = typename std::map<Key, Val>::const_iterator;
+
+ template <typename Key,typename Val, typename T >
+ MapIterator<Key,Val> FindClosestKey(std::map<Key,Val> &_map, T searchkey)
+ {
+	 if (_map.size() == 0)
+		 return _map.end();
+
+	 if (_map.size()==1)
+		 return _map.begin();
+
+	 MapIterator<Key, Val> it;
+	 for (it = _map.begin(); it != _map.end(); ++it)
+	 {
+		 if (it->first >= searchkey)
+			 break;
+	 }
+	 
+
+	 if (it == _map.end())
+		 return  std::prev(_map.end());
+
+	 if (it == _map.begin())
+		 return _map.begin();
+
+	 auto previt = std::prev(it);
+
+	 if (std::abs(searchkey - (previt->first)) < std::abs(searchkey - (it->first)))
+		 return previt;
+	 else
+		 return it;
  }
 
 //http://stackoverflow.com/questions/6892754/creating-a-simple-configuration-file-and-parser-in-c
