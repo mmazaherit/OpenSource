@@ -4,10 +4,11 @@
 #include <ostream>
 #include <string>
 #include <sstream>
+#include <iterator>
+#include <iostream>
 #include <vector>
 #include <map>
 #include <istream>
-#include <iostream>
 #include <iomanip>
 #include <algorithm>
 #include <limits>
@@ -32,28 +33,28 @@
     #include <dirent.h>
 #endif
 
-static inline std::string &lTrim(std::string &s, const char* t = " \t\n\r\f\v")
+static std::string &lTrim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     s.erase(0, s.find_first_not_of(t));
     return s;
 }
-static inline std::string &rTrim(std::string &s, const char* t = " \t\n\r\f\v")
+static std::string &rTrim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     s.erase(s.find_last_not_of(t) + 1);
     return s;
 }
-static inline std::string &Trim(std::string &s, const char* t = " \t\n\r\f\v")
+static std::string &Trim(std::string &s, const char* t = " \t\n\r\f\v")
 {
     return lTrim(rTrim(s, t), t);
 }
-static inline std::wstring s2ws(const std::string& str)
+static std::wstring s2ws(const std::string& str)
 {
   //using convert_typeX = std::codecvt_utf8<wchar_t>;
   //std::wstring_convert<convert_typeX, wchar_t> converterX;
   //return converterX.from_bytes(str);
   return std::wstring(str.begin(), str.end());
 }
-static inline std::string ws2s(const std::wstring& wstr)
+static  std::string ws2s(const std::wstring& wstr)
 {
   //using convert_typeX = std::codecvt_utf8<wchar_t>;
   //std::wstring_convert<convert_typeX, wchar_t> converterX;
@@ -62,31 +63,31 @@ static inline std::string ws2s(const std::wstring& wstr)
 }
 //http://stackoverflow.com/questions/16605967/set-precision-of-stdto-string-when-converting-floating-point-values
 template <typename T>
-static inline std::string ToStringWithPrecision(const T a_value, const int n = 6)
+static std::string ToStringWithPrecision(const T a_value, const int n = 6)
 {
     std::ostringstream out;
     out << std::setprecision(n) << a_value;
     return out.str();
 }
 template <typename T>
-static inline std::string STR(const T value)
+static std::string STR(const T value)
 {
 	return std::to_string(value);
 }
 template <typename T>
-static inline std::string STR(const T value, const int n)
+static std::string STR(const T value, const int n)
 {
 	return ToStringWithPrecision(value);
 }
 template <typename T>
-static inline std::string STR31(const T * pvalue, const int precision = 6, const char* delimiter = " ")
+static std::string STR31(const T * pvalue, const int precision = 6, const char* delimiter = " ")
 {
 	std::ostringstream out;
 	out.precision(precision);
 	out << pvalue[0] << delimiter << pvalue[1] << delimiter << pvalue[2];
 	return out.str();
 }
-static inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
+static std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(const char* file)
 {
     std::vector<std::vector<std::string> > data;
     std::ifstream infile(file);
@@ -123,27 +124,27 @@ static inline std::vector<std::vector<std::string> > ReadSpaceDelimitedFile(cons
     
     return data;
 }
-static inline std::string GetFileName(const std::string &FilePath)
+static  std::string GetFileName(const std::string &FilePath)
 {
     size_t found;
     found = FilePath.find_last_of("/\\");
     return FilePath.substr(found + 1);
 }
-static inline std::string GetFileNameWithoutExtention(const std::string &FilePath)
+static  std::string GetFileNameWithoutExtention(const std::string &FilePath)
 {
     std::string filename = GetFileName(FilePath);
     size_t found;
     found = filename.find_last_of(".");
     return filename.substr(0,found);
 }
-static inline std::string GetFileNameExtention(const std::string &FilePath)
+static  std::string GetFileNameExtention(const std::string &FilePath)
 {
     std::string filename = GetFileName(FilePath);
     size_t found;
     found = filename.find_last_of(".");
     return filename.substr(found+1,filename.size());
 }
-static inline std::string GetFileFolderName(const std::string &FilePath)
+static std::string GetFileFolderName(const std::string &FilePath)
 {
     size_t found;
     found = FilePath.find_last_of("/\\");
@@ -151,14 +152,14 @@ static inline std::string GetFileFolderName(const std::string &FilePath)
     return FilePath.substr(0,found);
 }
 //returns the full tile path, but just drop the extension
-static inline std::string GetFilePathWithoutExtention(const std::string &FilePath)
+static  std::string GetFilePathWithoutExtention(const std::string &FilePath)
 {
   size_t found;
   found = FilePath.find_last_of(".");
   return FilePath.substr(0, found);
 }
 //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
-static inline std::vector<std::string> Split(const std::string& s, const char delimiter=' ')
+static std::vector<std::string> Split(const std::string& s, const char delimiter=' ')
 {
 	std::vector<std::string> tokens;
 
@@ -175,7 +176,7 @@ static inline std::vector<std::string> Split(const std::string& s, const char de
 	}
 	return tokens;
 }
-static inline std::string GetMyDocsDirA()
+static  std::string GetMyDocsDirA()
 {
     std::string my_docs_dir;
     
@@ -192,7 +193,7 @@ static inline std::string GetMyDocsDirA()
     #endif
     return my_docs_dir;
 };
-static inline std::string GetExePathA()
+static  std::string GetExePathA()
 {
   #ifdef WIN32
   char szPath[_MAX_PATH + 1];
@@ -208,7 +209,7 @@ static inline std::string GetExePathA()
   return std::string(exepath);;
   #endif
 }
-static inline std::string ReadWholeFile(const std::string& FilePath)
+static std::string ReadWholeFile(const std::string& FilePath)
 {
     //read the whole file
     std::ifstream ifs(FilePath.c_str());
@@ -222,12 +223,12 @@ static inline std::string ReadWholeFile(const std::string& FilePath)
     return Buffer;    
 }
 //https://stackoverflow.com/questions/5840148/how-can-i-get-a-files-size-in-c
-static inline std::ifstream::pos_type GetFileSize(const char* filename)
+static std::ifstream::pos_type GetFileSize(const char* filename)
 {
     std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
     return in.tellg(); 
 }
-static inline std::vector<std::string> GetFilesInDirectoryA(const std::string directory, const std::string filter="*")
+static std::vector<std::string> GetFilesInDirectoryA(const std::string directory, const std::string filter="*")
 {
     std::vector<std::string> out;
     #ifdef WIN32
@@ -288,7 +289,7 @@ static inline std::vector<std::string> GetFilesInDirectoryA(const std::string di
 
 ////////////////////////////////////////////////////////////////////////// VECTOR UTILS
 template <typename T>
-inline std::vector<size_t> SortIndexesAsc(const std::vector<T> &v)
+ std::vector<size_t> SortIndexesAsc(const std::vector<T> &v)
 {
 
     // initialize original index locations
@@ -302,7 +303,7 @@ inline std::vector<size_t> SortIndexesAsc(const std::vector<T> &v)
     return idx;
 }
 template <typename T>
-inline std::vector<size_t> SortIndexesDec(const std::vector<T> &v)
+ std::vector<size_t> SortIndexesDec(const std::vector<T> &v)
 {
 
     // initialize original index locations
@@ -315,8 +316,39 @@ inline std::vector<size_t> SortIndexesDec(const std::vector<T> &v)
     
     return idx;
 }
+ //https://stackoverflow.com/questions/8647635/elegant-way-to-find-closest-value-in-a-vector-from-above
+ //the vector must be sorted in ascending order
+ template <typename T, typename Tv>
+ T* FindClosestValueInAscendingVector(std::vector<T> &vec, Tv value)
+ {	 
+	 if (vec.size() == 0)
+		 return NULL;
+
+	 //value is smaller than all of them
+	 if (value < *vec.begin())
+		 return &(*vec.begin());
+
+	 std::vector<T>::iterator lastit = vec.end()-1;
+
+	 //if value is greater than all of the values in vector
+	 if (value > *lastit)
+		 return &(*lastit);
+
+	 auto it = std::lower_bound(vec.begin(), vec.end(), value);
+	 
+	 if (vec.size() == 1)
+		 return &(*it);
+
+	 auto previt = it - 1;
+
+	 if (std::abs(value - *previt) < std::abs(value - *it))
+		 return &(*previt);
+	 else
+		 return &(*it);
+ }
+
 //http://stackoverflow.com/questions/6892754/creating-a-simple-configuration-file-and-parser-in-c
-inline std::map<std::string, std::string> ReadConfig(const std::string &ConfigFile)
+static std::map<std::string, std::string> ReadConfig(const std::string &ConfigFile)
 {
     std::ifstream is_file(ConfigFile.c_str());
 	std::map<std::string, std::string> config;

@@ -77,28 +77,7 @@ public:
 };
 
 
-int TestGeodesy() 
-{
-	double x=0, y=0, z=0, lon, lat ,h ;
-	double input1[6] = { 37.8043722, -122.2708026,0.0 };
-	double output1[3] = { -2694044.4111565403, -4266368.805493665, 3888310.602276871 };
 
-	Geodesy geodesy;
-	geodesy.GeodeticToEcef(input1[0], input1[1], input1[2], x, y, z);
-	
-	double dx = abs(x - output1[0]);
-	double dy = abs(y - output1[1]);
-	double dz = abs(z - output1[2]);
-	if (dx > 0.001 || dy > 0.001 || dz > 0.001)
-		return -1;
-
-	geodesy.EcefToGeodetic(lat, lon, h, x, y, z);
-
-	if (abs(lat - input1[0]) > 1e-6 || abs(lon - input1[1]) > 1e-6 || abs(h - input1[2]) > 1e-6)
-		return -1;
-
-	return 0;
-}
 
 
 #endif
